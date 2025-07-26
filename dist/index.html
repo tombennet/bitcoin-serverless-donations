@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Bitcoin Serverless Payments</title>
+  </head>
+
+  <body>
+    <h1>Bitcoin Serverless Payments</h1>
+    <p>
+      A simple, self-custodial solution for accepting private, on-chain Bitcoin
+      payments using XPUBs and serverless functions.
+    </p>
+    <p>
+      Full tutorial:
+      <a
+        href="https://bennet.org/blog/private-serverless-bitcoin-payments-for-indie-devs/"
+        >https://bennet.org/blog/private-serverless-bitcoin-payments-for-indie-devs/</a
+      >
+    </p>
+    <div id="btc-qr"></div>
+    <button id="btc-btn">Copy Address</button>
+    <script src="https://unpkg.com/qr-code-styling@1.5.0/lib/qr-code-styling.js"></script>
+    <script>
+      // Constants
+      const ADDRESS_KEY = "btc-address";
+      const TIMESTAMP_KEY = "btc-timestamp";
+      const CACHE_DURATION = 24 * 60 * 60 * 1000; // 24 hours
+      const FALLBACK_ADDRESS = "YOUR_FALLBACK_ADDRESS_HERE";
+
+      // DOM elements
+      const btcQr = document.getElementById("btc-qr");
+      const btcBtn = document.getElementById("btc-btn");
+
+      async function getBitcoinAddress() {
+        // Check localStorage cache
+        const storedAddress = localStorage.getItem(ADDRESS_KEY);
+        const storedTimestamp = localStorage.getItem(TIMESTAMP_KEY);
+
+        if (storedAddress && storedTimestamp) {
+          const timestamp = parseInt(storedTimestamp);
+          const now = Date.now();
+          if (now - timestamp < CACHE_DURATION) {
+            return storedAddress;
+          }
+        }
+
+        // Fetch from server if no valid cache
+        try {
+          const response = await fetch("/.netlify/functions/get-address");
+          if (!response.ok) {
+            throw new Error("Failed to fetch Bitcoin address");
+          }
+
+          const data = await response.json();
+          localStorage.setItem(ADDRESS_KEY, data.address);
+          localStorage.setItem(TIMESTAMP_KEY, Date.now().toString());
+          return data.address;
+        } catch (err) {
+          console.error("Failed to fetch Bitcoin address", err);
+          return FALLBACK_ADDRESS;
+        }
+      }
+
+      async function initPayments() {
+        const address = await getBitcoinAddress();
+
+        // Render QR code
+        const qrCode = new QRCodeStyling({
+          width: 200,
+          height: 200,
+          type: "canvas",
+          data: `bitcoin:${address}`,
+          image: "/bitcoin.svg",
+        });
+
+        qrCode.append(btcQr);
+
+        // Initialise copy button
+        btcBtn.addEventListener("click", async () => {
+          try {
+            await navigator.clipboard.writeText(address);
+            btcBtn.textContent = "Copied!";
+            setTimeout(() => {
+              btcBtn.textContent = "Copy Address";
+            }, 2000);
+          } catch (err) {
+            btcBtn.textContent = "Failed to copy";
+            setTimeout(() => {
+              btcBtn.textContent = "Copy Address";
+            }, 2000);
+          }
+        });
+      }
+
+      initPayments();
+    </script>
+  </body>
+</html>

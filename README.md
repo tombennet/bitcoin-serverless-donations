@@ -59,12 +59,19 @@ npm install
 
 ## 🔒 Privacy & Security
 
-- **Keep your address pool private**: Public addresses are distributed at random, but based on a semi-stable client fingerprint (a hash of IP, city, and date)
-- **No tracking**: No analytics or user tracking
-- **Local caching**: Addresses cached in `localStorage` for 24 hours
-- **Fallback support**: Graceful degradation if server is unavailable - serve a fallback address
+### Keep your address pool private
+
+Public addresses are distributed at random, but based on a semi-stable client fingerprint (a hash of IP, city, and date).
 
 Remember, you should _never_ include your extended public key (XPUB) in your frontend code.
+
+### Local caching and fallbacks
+
+Addresses served from the endpoint are cached in browser `localStorage` for 24 hours. If the server is unavailable, we ensure graceful degradation by serving a fallback address.
+
+### Balance monitoring and used addresses
+
+In version 1.0 of this setup, it's necessary to manually mark used addresses in `addresses.js` to remove them from circulation. More detail on this process is available in my [accompanying tutorial](https://bennet.org/blog/private-serverless-bitcoin-payments-for-indie-devs/). In a future release, I intend to add options for automated balance checking and a persistent storage layer.
 
 ## 📚 Learn More
 

@@ -1,5 +1,5 @@
 import type { Context } from "@netlify/functions";
-import { AddressPoolManager } from "./address-pool.js";
+import { AddressPoolManager } from "../get-address/address-pool.js";
 import {
   validateBitcoinEnvironment,
   createValidationErrorResponse,
@@ -10,27 +10,27 @@ export default async (req: Request, context: Context) => {
     // Validate required environment variables
     const { xpub, derivationPath } = validateBitcoinEnvironment();
 
-    // Initialize address pool manager with both xpub and derivation path
+    // Initialize address pool manager
     const poolManager = new AddressPoolManager(xpub, derivationPath);
 
-    // Get the current address (handles rotation logic internally)
-    const address = await poolManager.getCurrentAddress();
+    // Clear the cache
+    await poolManager.clearCache();
 
-    // Log pool statistics for debugging if DEBUG_LOGS is enabled
-    if (process.env.DEBUG_LOGS === "true") {
-      const poolStats = await poolManager.getPoolStats();
-      console.log("Address Pool Stats:", JSON.stringify(poolStats, null, 2));
-    }
-
-    return new Response(JSON.stringify({ address }), {
-      status: 200,
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-        "Content-Type": "application/json",
-      },
-    });
+    return new Response(
+      JSON.stringify({
+        message: "Cache cleared successfully",
+        timestamp: new Date().toISOString(),
+      }),
+      {
+        status: 200,
+        headers: {
+          "Access-Control-Allow-Origin": "*",
+          "Content-Type": "application/json",
+        },
+      }
+    );
   } catch (error) {
-    console.error("Error in get-address function:", error);
+    console.error("Error in clear-cache function:", error);
 
     // Handle validation errors with proper response format
     if (error.message.includes("environment variable is required")) {

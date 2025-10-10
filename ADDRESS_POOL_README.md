@@ -37,12 +37,11 @@ Ensure to enclose both in double inverted commas, e.g. `BITCOIN_DERIVATION_PATH=
 
 **Important Notes**
 
-- The XPUB you provide should be derived from the **account level** (e.g., `m/84'/0'/2'`)
-- The system automatically derives receiving addresses (`/0/index`) from your account-level XPUB
+- The XPUB you provide should be derived from the **account level** (e.g., `m/84'/0'/2'`). The system automatically derives receiving addresses (`/0/index`) from your account-level XPUB.
 - For example, if your XPUB is derived from `m/84'/0'/2'`, the system will generate addresses at `m/84'/0'/2'/0/index`
 - The system automatically detects the address type (P2PKH, P2WPKH, P2WPKH-in-P2SH) from the derivation path
 - Both environment variables are required for maximum robustness and flexibility
-- This matches how wallet software like Sparrow displays receiving addresses
+- When testing your setup, be sure to check that the derived addresses **match those you see in your wallet software**. This is a _vital_ step in ensuring you receive any funds that are sent to you.
 
 ## Dependencies
 

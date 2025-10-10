@@ -45,7 +45,7 @@ Addresses served from the endpoint are cached in browser `localStorage` for 10 m
    BITCOIN_XPUB="xpub6..."
    BITCOIN_DERIVATION_PATH="m/84'/0'/0'"
    ```
-3. **Test locally**:
+3. **Test locally**, making sure that the derived addresses match those you see in your wallet software
    ```bash
    netlify dev
    ```

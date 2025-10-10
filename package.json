@@ -5,13 +5,18 @@
   "license": "MIT",
   "type": "module",
   "scripts": {
-    "dev": "netlify dev",
-    "process-sparrow": "node utils/process-sparrow-export.js"
+    "dev": "netlify dev"
   },
   "dependencies": {
-    "@netlify/functions": "^4.1.15",
-    "csv-parser": "^3.2.0",
-    "netlify-cli": "^22.4.0",
+    "@netlify/blobs": "^10.1.0",
+    "@netlify/functions": "^4.3.0",
+    "@noble/curves": "^2.0.1",
+    "@noble/hashes": "^2.0.1",
+    "@scure/base": "^2.0.0",
+    "@scure/bip32": "^2.0.1",
     "qr-code-styling": "^1.9.2"
+  },
+  "devDependencies": {
+    "netlify-cli": "^23.9.1"
   }
 }

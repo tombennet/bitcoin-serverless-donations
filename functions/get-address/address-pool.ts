@@ -85,7 +85,7 @@ export class AddressPoolManager {
    * Detect purpose from derivation path
    */
   private detectPurpose(): number {
-    // Extract purpose from derivation path (e.g., m/84'/0'/0'/0 -> 84)
+    // Extract purpose from derivation path (e.g., m/84'/0'/0' -> 84)
     const match = this.derivationPath.match(/m\/(\d+)'/);
     if (match) {
       return parseInt(match[1], 10);
@@ -113,7 +113,8 @@ export class AddressPoolManager {
       }
 
       // Derive the child key for this address index
-      // XPUB is at account level, so we need to derive to change level (0 for receiving) then to address index
+      // XPUB is at account level, so we derive to change level (0 for receiving) then to address index
+      // Note: We can only derive non-hardened children from XPUB
       const child = hdkey.derive(`m/0/${index}`);
 
       if (!child.publicKey) {

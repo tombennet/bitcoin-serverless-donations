@@ -17,6 +17,16 @@ export function validateBitcoinEnvironment(): {
     throw new Error("BITCOIN_DERIVATION_PATH environment variable is required");
   }
 
+  // Validate that derivation path is at account level (ends with hardened derivation)
+  // Expected format: m/purpose'/coin'/account' (e.g., m/84'/0'/0')
+  // This path is used for purpose detection only - the XPUB should be at account level
+  if (!derivationPath.match(/^m\/\d+'\/\d+'\/\d+'$/)) {
+    throw new Error(
+      "BITCOIN_DERIVATION_PATH must be at account level (e.g., m/84'/0'/0'). " +
+        "This is used for purpose detection - the XPUB should be at the same account level."
+    );
+  }
+
   return { xpub, derivationPath };
 }
 

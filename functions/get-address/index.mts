@@ -3,7 +3,7 @@ import { AddressPoolManager } from "./address-pool.js";
 import {
   validateBitcoinEnvironment,
   createValidationErrorResponse,
-} from "../shared/validation.js";
+} from "./validation.js";
 
 export default async (req: Request, context: Context) => {
   try {

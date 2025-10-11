@@ -89,10 +89,12 @@ Returns the current Bitcoin address for payments.
 
 ## 🗑️ Cache Management
 
-If you need to clear the address pool cache (e.g., when changing derivation paths or XPUBs), you can do so through:
+The address pool cache is **automatically invalidated** when you change your XPUB or derivation path. The system uses environment-based cache keys, so changing these variables will automatically generate fresh addresses without manual intervention.
 
-- **Netlify CLI**: `netlify blobs:delete address-pool pool-state`
-- **Netlify Dashboard**: Go to your Project → Blobs → Delete the `pool-state` blob from the `address-pool` store
+If you need to manually clear the cache for other reasons, you can do so through:
+
+- **Netlify CLI**: `netlify blobs:delete address-pool pool-state-<hash>`
+- **Netlify Dashboard**: Go to your Project → Blobs → Delete the relevant blob from the `address-pool` store
 
 The address pool will automatically regenerate when needed.
 

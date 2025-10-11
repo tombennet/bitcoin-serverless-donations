@@ -23,6 +23,15 @@ const POOL_SIZE = 5;
 const ROTATION_INTERVAL = 10 * 60 * 1000; // 10 minutes
 const STORE_NAME = "address-pool";
 
+/**
+ * Generate a hash of the environment configuration for cache key versioning
+ */
+function generateEnvironmentHash(xpub: string, derivationPath: string): string {
+  const configString = `${xpub}:${derivationPath}`;
+  const hash = sha256(utf8ToBytes(configString));
+  return bytesToHex(hash).slice(0, 16); // Use first 16 chars for shorter keys
+}
+
 /** BIP340/BIP341 tagged hash: H_tag(m) = sha256(sha256(tag)||sha256(tag)||m) */
 function taggedHash(tag: string, m: Uint8Array): Uint8Array {
   const t = utf8ToBytes(tag);
@@ -51,11 +60,15 @@ export class AddressPoolManager {
   private store: ReturnType<typeof getStore>;
   private xpub: string;
   private derivationPath: string;
+  private environmentHash: string;
+  private cacheKey: string;
 
   constructor(xpub: string, derivationPath: string) {
     this.store = getStore(STORE_NAME);
     this.xpub = xpub;
     this.derivationPath = derivationPath;
+    this.environmentHash = generateEnvironmentHash(xpub, derivationPath);
+    this.cacheKey = `pool-state-${this.environmentHash}`;
   }
 
   /**
@@ -206,7 +219,7 @@ export class AddressPoolManager {
    */
   private async getPoolState(): Promise<AddressPoolState | null> {
     try {
-      const data = await this.store.get("pool-state", { type: "json" });
+      const data = await this.store.get(this.cacheKey, { type: "json" });
       return data as AddressPoolState | null;
     } catch (error) {
       console.error("Failed to get pool state:", error);
@@ -219,7 +232,7 @@ export class AddressPoolManager {
    */
   private async savePoolState(state: AddressPoolState): Promise<void> {
     try {
-      await this.store.set("pool-state", JSON.stringify(state));
+      await this.store.set(this.cacheKey, JSON.stringify(state));
     } catch (error) {
       console.error("Failed to save pool state:", error);
       throw error;
@@ -437,7 +450,7 @@ export class AddressPoolManager {
    */
   async clearCache(): Promise<void> {
     try {
-      await this.store.delete("pool-state");
+      await this.store.delete(this.cacheKey);
     } catch (error) {
       console.error("Failed to clear pool cache:", error);
       throw error;

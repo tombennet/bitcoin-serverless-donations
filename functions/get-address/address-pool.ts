@@ -444,16 +444,4 @@ export class AddressPoolManager {
     // Get the new address (this will trigger rotation)
     return await this.getCurrentAddress();
   }
-
-  /**
-   * Clear the entire pool cache and regenerate (useful when derivation path changes)
-   */
-  async clearCache(): Promise<void> {
-    try {
-      await this.store.delete(this.cacheKey);
-    } catch (error) {
-      console.error("Failed to clear pool cache:", error);
-      throw error;
-    }
-  }
 }

@@ -62,11 +62,10 @@ Addresses served from the endpoint are cached in browser `localStorage` for 10 m
 
 ```
 ├── functions/
-│   ├── get-address/
-│   │   ├── index.mts              # Main serverless function
-│   │   └── address-pool.ts        # Address pool management
-│   └── clear-cache/
-│       └── index.mts              # Cache clearing endpoint
+│   └── get-address/
+│       ├── index.mts              # Main serverless function
+│       ├── address-pool.ts        # Address pool management
+│       └── validation.ts          # Environment validation utilities
 ├── dist/
 │   ├── index.html                 # Minimal frontend
 │   └── bitcoin.svg                # Bitcoin logo for QR code

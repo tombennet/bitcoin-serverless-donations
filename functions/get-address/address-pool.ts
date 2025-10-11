@@ -121,7 +121,6 @@ export class AddressPoolManager {
         throw new Error(`Failed to derive public key for index ${index}`);
       }
 
-      // Generate address based on purpose (matching hdUtils logic)
       const base58check = createBase58check(sha256);
       const HASH160 = (buf: Uint8Array) => ripemd160(sha256(buf));
 
@@ -164,7 +163,7 @@ export class AddressPoolManager {
         // bech32m encode: witness v1 + 32-byte x-only
         const words = bech32m.toWords(xOnlyTweaked);
         words.unshift(0x01); // v1
-        // NOTE: pick HRP by network: "bc" (mainnet), "tb" (testnet), "bcrt" (regtest)
+        // Assume mainnet
         address = bech32m.encode("bc", words);
       }
 

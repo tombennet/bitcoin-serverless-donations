@@ -187,10 +187,6 @@ export class AddressPoolManager {
       );
 
       if (!response.ok) {
-        if (response.status === 404) {
-          // Address not found means no activity
-          return false;
-        }
         throw new Error(`Mempool API error: ${response.status}`);
       }
 

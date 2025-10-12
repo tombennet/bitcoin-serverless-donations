@@ -8,12 +8,10 @@
     "dev": "netlify dev"
   },
   "dependencies": {
+    "@bitcoinerlab/secp256k1": "^1.2.0",
     "@netlify/blobs": "^10.1.0",
     "@netlify/functions": "^4.3.0",
-    "@noble/curves": "^2.0.1",
-    "@noble/hashes": "^2.0.1",
-    "@scure/base": "^2.0.0",
-    "@scure/bip32": "^2.0.1",
+    "@swan-bitcoin/xpub-lib": "^0.3.0",
     "qr-code-styling": "^1.9.2"
   },
   "devDependencies": {

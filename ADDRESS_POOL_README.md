@@ -24,7 +24,7 @@ BITCOIN_XPUB="your_xpub_here"
 BITCOIN_DERIVATION_PATH="your_path_here"
 ```
 
-Ensure to enclose both in double inverted commas, e.g. `BITCOIN_DERIVATION_PATH="m/84'/0'/0'"`.
+Ensure to enclose all values in double inverted commas, e.g. `BITCOIN_DERIVATION_PATH="m/84'/0'/0'"`.
 
 **Important**: Your extended public key (XPUB) and derivation path should correspond to the account level (e.g., `m/84'/0'/0'` for BIP84). The system will automatically generate receiving addresses.
 
@@ -47,9 +47,8 @@ Ensure to enclose both in double inverted commas, e.g. `BITCOIN_DERIVATION_PATH=
 
 The system uses the following npm packages:
 
-- `@scure/bip32`: HD wallet key derivation
-- `@scure/base`: Base58 and bech32 encoding/decoding
-- `@noble/hashes`: Cryptographic hash functions (SHA256, RIPEMD160)
+- `@swan-bitcoin/xpub-lib`: HD wallet key derivation and address generation
+- `@bitcoinerlab/secp256k1`: Elliptic curve cryptography for Taproot support
 - `@netlify/blobs`: State persistence
 - `@netlify/functions`: Serverless function framework
 

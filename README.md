@@ -1,6 +1,6 @@
 # Bitcoin Serverless Payments
 
-A simple, self-custodial solution for accepting private, on-chain Bitcoin payments with minimal overhead and a good level of privacy.
+A simple, self-custodial solution for accepting private, on-chain Bitcoin donations with minimal overhead and a good level of privacy.
 
 ## 🚀 Quick Start
 

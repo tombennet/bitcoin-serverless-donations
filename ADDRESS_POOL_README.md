@@ -48,8 +48,8 @@ Ensure to enclose all values in double inverted commas, e.g. `BITCOIN_DERIVATION
 The system uses the following npm packages:
 
 - `@swan-bitcoin/xpub-lib`: HD wallet key derivation and address generation
-- `@bitcoinerlab/secp256k1`: Elliptic curve cryptography for Taproot support
-- `@netlify/blobs`: State persistence
+- `@bitcoinerlab/secp256k1`: Elliptic curve cryptography for Taproot support - the popular `tiny-secp256k1` library doesn't work in a serverless environment due to issues with the WASM
+- `@netlify/blobs`: State persistence for the address pool
 - `@netlify/functions`: Serverless function framework
 
 ## Error Handling

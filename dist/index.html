@@ -3,14 +3,14 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Bitcoin Serverless Payments</title>
+    <title>Bitcoin Serverless Donations</title>
   </head>
 
   <body>
     <h1>Bitcoin Serverless Payments</h1>
     <p>
       A simple, self-custodial solution for accepting private, on-chain Bitcoin
-      payments using XPUBs and serverless functions.
+      payments using just an XPUB and a serverless function.
     </p>
     <p>
       Full tutorial:
@@ -26,7 +26,7 @@
       // Constants
       const ADDRESS_KEY = "btc-address";
       const TIMESTAMP_KEY = "btc-timestamp";
-      const CACHE_DURATION = 24 * 60 * 60 * 1000; // 24 hours
+      const CACHE_DURATION = 10 * 60 * 1000; // 10 minutes
       const FALLBACK_ADDRESS = "YOUR_FALLBACK_ADDRESS_HERE";
 
       // DOM elements

@@ -13,6 +13,32 @@ A simple, self-custodial solution for accepting private, on-chain Bitcoin paymen
 - **Private**: No third-party payment processors, middlemen, or KYC requirements. Automatically rotate addresses for privacy.
 - **Free**: Free hosting on Netlify, Vercel, or Cloudflare. Minimal codebase, easy to integrate into your existing project.
 
+## 📦 Installation
+
+1. **Clone repository**
+   ```bash
+   git clone https://github.com/tombennet/bitcoin-serverless-payments.git
+   cd bitcoin-serverless-payments
+   npm install
+   ```
+2. **Set your environment variables in `.env`**:
+   ```bash
+   BITCOIN_XPUB="xpub6..."
+   BITCOIN_DERIVATION_PATH="m/84'/0'/0'"
+   ```
+3. **Test locally**, making sure that the derived addresses match those you see in your wallet software
+   ```bash
+   netlify dev
+   ```
+4. **Deploy to Netlify** and set both environment variables in your deployment settings
+
+### Environment Variables
+
+- **`BITCOIN_XPUB`** (required): Extended public key (XPUB) for the Bitcoin wallet account you wish to use
+- **`BITCOIN_DERIVATION_PATH`** (required): The derivation path to use for address generation
+
+**Important**: Your XPUB and derivation path should correspond to the account level (e.g., `m/84'/0'/0'` for BIP84). The system will automatically generate receiving addresses. See [ADDRESS_POOL_README.md](ADDRESS_POOL_README.md) for detailed setup instructions.
+
 ## 🏗️ How It Works
 
 ### XPUB
@@ -31,32 +57,6 @@ Your serverless function derives addresses, stores them, rotates them, checks fo
 ### Local caching and fallbacks
 
 Addresses served from the endpoint are cached in browser `localStorage` for 10 minutes, and rendered in a QR code. If the server is unavailable, we ensure graceful degradation by serving a fallback address.
-
-## 📦 Installation
-
-1. **Clone repository**
-   ```bash
-   git clone https://github.com/tombennet/bitcoin-serverless-payments.git
-   cd bitcoin-serverless-payments
-   npm install
-   ```
-2. **Set your environment variable in `.env`**:
-   ```bash
-   BITCOIN_XPUB="xpub6..."
-   BITCOIN_DERIVATION_PATH="m/84'/0'/0'"
-   ```
-3. **Test locally**, making sure that the derived addresses match those you see in your wallet software
-   ```bash
-   netlify dev
-   ```
-4. **Deploy to Netlify** and set both environment variables in your deployment settings
-
-### Environment Variables
-
-- **`BITCOIN_XPUB`** (required): Your Bitcoin extended public key (XPUB)
-- **`BITCOIN_DERIVATION_PATH`** (required): The derivation path to use for address generation
-
-**Important**: Your XPUB and derivation path should correspond to the account level (e.g., `m/84'/0'/0'` for BIP84). The system will automatically generate receiving addresses. See [ADDRESS_POOL_README.md](ADDRESS_POOL_README.md) for detailed setup instructions.
 
 ## 📁 Project Structure
 

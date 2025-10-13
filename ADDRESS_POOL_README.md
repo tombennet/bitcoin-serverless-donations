@@ -4,7 +4,7 @@ This system provides a dynamic XPUB-based address pool that automatically rotate
 
 ## How It Works
 
-1. **XPUB Derivation**: Addresses are derived from a Bitcoin XPUB using proper BIP44/49/84/86 standards. This is deterministic - the same XPUB always generates the same addresses in the same order.
+1. **XPUB Derivation**: Addresses are derived from a Bitcoin XPUB using [Swan's XPUB tool](https://github.com/swan-bitcoin/xpub-tool). This is deterministic - the same XPUB always generates the same addresses in the same order.
 2. **Address Pool**: Maintains a pool of 5 addresses at any time
 3. **10-Minute Rotation**: Every 10 minutes, the system:
    - Rotates to the next address in the pool (deterministic rotation)

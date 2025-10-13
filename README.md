@@ -47,7 +47,7 @@ Your extended public key (or 'XPUB', exported from your Bitcoin wallet) is store
 
 ### Address Rotation
 
-Your serverless function derives addresses, stores them, rotates them, checks for transactions, and removes used addresses from circulation.
+Your serverless function derives addresses using [Swan's XPUB tool](https://github.com/swan-bitcoin/xpub-tool), stores them, rotates them, checks for transactions, and removes used addresses from circulation.
 
 - Address pool rotates every 10 minutes automatically
 - The mempool.space API is used to check for used addresses, which are replaced with fresh ones from your XPUB

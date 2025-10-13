@@ -1,6 +1,6 @@
 # Bitcoin Serverless Payments
 
-A simple, self-custodial solution for accepting private, on-chain Bitcoin payments using XPUBs and serverless functions. This project enables indie developers to accept Bitcoin donations with minimal overhead and a good level of privacy.
+A simple, self-custodial solution for accepting private, on-chain Bitcoin donations with minimal overhead and a good level of privacy.
 
 ## 🚀 Quick Start
 
@@ -8,81 +8,95 @@ A simple, self-custodial solution for accepting private, on-chain Bitcoin paymen
 
 ## ✨ Features
 
-- **Serverless**: Deploy on Netlify with zero server maintenance. Easily adaptable to other hosting providers.
-- **Private**: No third-party payment processors, middlemen, or KYC requirements.
-- **Simple**: Minimal codebase, easy to integrate into your existing project.
-- **Sovereign**: Receive payments directly to your own wallet.
-- **Cost-effective**: Free hosting on Netlify (or Vercel, Cloudflare, etc) with minimal operational costs
-
-## 🏗️ How It Works
-
-1. **Address Generation**: Export addresses from Sparrow Wallet as CSV
-2. **Processing**: Convert CSV to JSON using the included utility script
-3. **Distribution**: Serverless function randomly serves addresses based on hashed client fingerprint
-4. **Display**: Frontend renders QR code and copy button for easy payment, and stores Bitcoin address for 24 hours
+- **Serverless**: No database required, and zero server maintenance.
+- **Sovereign**: Receive payments directly to your own wallet - just grab your account XPUB and you're good to go.
+- **Private**: No third-party payment processors, middlemen, or KYC requirements. Automatically rotate addresses for privacy.
+- **Free**: Free hosting on Netlify, Vercel, or Cloudflare. Minimal codebase, easy to integrate into your existing project.
 
 ## 📦 Installation
 
-```bash
-git clone https://github.com/tombennet/bitcoin-serverless-payments.git
-cd bitcoin-serverless-payments
-npm install
-```
-
-## 🔧 Setup
-
-1. **Export addresses from Sparrow Wallet** as CSV
-2. **Process the export**:
+1. **Clone repository**
    ```bash
-   npm run process-sparrow -- "path/to/your/sparrow-export.csv"
+   git clone https://github.com/tombennet/bitcoin-serverless-payments.git
+   cd bitcoin-serverless-payments
+   npm install
    ```
-3. **Test and deploy**:
+2. **Set your environment variables in `.env`**:
    ```bash
-   npm run dev
+   BITCOIN_XPUB="xpub6..."
+   BITCOIN_DERIVATION_PATH="m/84'/0'/0'"
    ```
+3. **Test locally**, making sure that the derived addresses match those you see in your wallet software
+   ```bash
+   netlify dev
+   ```
+4. **Deploy to Netlify** and set both environment variables in your deployment settings
+
+### Environment Variables
+
+- **`BITCOIN_XPUB`** (required): Extended public key (XPUB) for the Bitcoin wallet account you wish to use
+- **`BITCOIN_DERIVATION_PATH`** (required): The derivation path to use for address generation
+
+**Important**: Your XPUB and derivation path should correspond to the account level (e.g., `m/84'/0'/0'` for BIP84). The system will automatically generate receiving addresses. See [ADDRESS_POOL_README.md](ADDRESS_POOL_README.md) for detailed setup instructions.
+
+## 🏗️ How It Works
+
+### XPUB
+
+Your extended public key (or 'XPUB', exported from your Bitcoin wallet) is stored as an environment variable, along with its derivation path. Remember, XPUBs cannot be used to spend funds - there's no need to touch a private key in this setup. Your XPUB is never exposed to the frontend; only derived addresses are served to users.
+
+### Address Rotation
+
+Your serverless function derives addresses using [Swan's XPUB tool](https://github.com/swan-bitcoin/xpub-tool), stores them, rotates them, checks for transactions, and removes used addresses from circulation.
+
+- Address pool rotates every 10 minutes automatically
+- The mempool.space API is used to check for used addresses, which are replaced with fresh ones from your XPUB
+- Pool size stays constant at 5 addresses to prevent index bloat
+- Supports BIP44 (P2PKH), BIP49 (P2WPKH-in-P2SH), and BIP84 (P2WPKH), BIP86 (P2TR) address types
+
+### Local caching and fallbacks
+
+Addresses served from the endpoint are cached in browser `localStorage` for 10 minutes, and rendered in a QR code. If the server is unavailable, we ensure graceful degradation by serving a fallback address.
 
 ## 📁 Project Structure
 
 ```
 ├── functions/
 │   └── get-address/
-│       ├── index.mts              # Serverless function
-│       └── addresses.js           # Generated address list
-├── utils/
-│   ├── process-sparrow-export.js  # Sparrow CSV to JSON converter
-│   └── SAMPLE.csv                 # Sample export
+│       ├── index.mts              # Main serverless function
+│       ├── address-pool.ts        # Address pool management
+│       └── validation.ts          # Environment validation utilities
 ├── dist/
-│   ├── index.html                 # Minimal frontend inc script
+│   ├── index.html                 # Minimal frontend
 │   └── bitcoin.svg                # Bitcoin logo for QR code
+├── ADDRESS_POOL_README.md         # Detailed address pool documentation
 └── netlify.toml                   # Deployment configuration
 ```
 
-## 🔒 Privacy & Security
+## 📚 API Endpoints
 
-### Keep your address pool private
+### GET `/api/get-address`
 
-Public addresses are distributed at random, but based on a semi-stable client fingerprint (a hash of IP, city, and date).
+Returns the current Bitcoin address for payments.
 
-Remember, you should _never_ include your extended public key (XPUB) in your frontend code.
+**Response:**
 
-### Local caching and fallbacks
+```json
+{
+  "address": "bc1q..."
+}
+```
 
-Addresses served from the endpoint are cached in browser `localStorage` for 24 hours. If the server is unavailable, we ensure graceful degradation by serving a fallback address.
+## 🗑️ Cache Management
 
-### Balance monitoring and used addresses
+The address pool cache is **automatically invalidated** when you change your XPUB or derivation path. The system uses environment-based cache keys, so changing these variables will automatically generate fresh addresses without manual intervention.
 
-In version 1.0 of this setup, it's necessary to manually mark used addresses in `addresses.js` to remove them from circulation. More detail on this process is available in my [accompanying tutorial](https://bennet.org/blog/private-serverless-bitcoin-payments-for-indie-devs/). In a future release, I intend to add options for automated balance checking and a persistent storage layer.
+If you need to manually clear the cache for other reasons, you can do so through:
 
-## 📚 Learn More
+- **Netlify CLI**: `netlify blobs:delete address-pool pool-state-<hash>`
+- **Netlify Dashboard**: Go to your Project → Blobs → Delete the relevant blob from the `address-pool` store
 
-For a complete tutorial covering:
-
-- Setting up Sparrow Wallet
-- Generating and exporting addresses
-- Customizing the experience
-- Security considerations
-
-**Visit: [https://bennet.org/blog/private-serverless-bitcoin-payments-for-indie-devs/](https://bennet.org/blog/private-serverless-bitcoin-payments-for-indie-devs/)**
+The address pool will automatically regenerate when needed.
 
 ## 🤝 Contributing
 

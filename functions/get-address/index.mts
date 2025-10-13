@@ -1,28 +1,26 @@
 import type { Context } from "@netlify/functions";
-import { addresses } from "./addresses.js";
-import { createHash } from "crypto";
-
-function hashToInt(input: string) {
-  const hash = createHash("sha256").update(input).digest();
-  return hash.readUInt32BE(0);
-}
+import { AddressPoolManager } from "./address-pool.js";
+import {
+  validateBitcoinEnvironment,
+  createValidationErrorResponse,
+} from "./validation.js";
 
 export default async (req: Request, context: Context) => {
   try {
-    const unusedAddresses = addresses.filter((addr) => !addr.used);
-    if (unusedAddresses.length < 1) {
-      return new Response("I'm fresh out of Bitcoin addresses.", {
-        status: 503,
-      });
+    // Validate required environment variables
+    const { xpub, derivationPath } = validateBitcoinEnvironment();
+
+    // Initialize address pool manager with both xpub and derivation path
+    const poolManager = new AddressPoolManager(xpub, derivationPath);
+
+    // Get the current address (handles rotation logic internally)
+    const address = await poolManager.getCurrentAddress();
+
+    // Log pool statistics for debugging if DEBUG_LOGS is enabled
+    if (process.env.DEBUG_LOGS === "true") {
+      const poolStats = await poolManager.getPoolStats();
+      console.log("Address Pool Stats:", JSON.stringify(poolStats, null, 2));
     }
-
-    const ip = context.ip || "unknown";
-    const city = context.geo.city || "unknown";
-    const today = new Date().toISOString().slice(0, 10);
-    const fingerprint = `${ip}|${city}|${today}`;
-    const clientOffset = hashToInt(fingerprint) % unusedAddresses.length;
-
-    const address = unusedAddresses[clientOffset].address;
 
     return new Response(JSON.stringify({ address }), {
       status: 200,
@@ -32,6 +30,19 @@ export default async (req: Request, context: Context) => {
       },
     });
   } catch (error) {
-    return new Response("Internal server error", { status: 500 });
+    console.error("Error in get-address function:", error);
+
+    // Handle validation errors with proper response format
+    if (error.message.includes("environment variable is required")) {
+      return createValidationErrorResponse(error.message);
+    }
+
+    return new Response(JSON.stringify({ error: error.message }), {
+      status: 500,
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Content-Type": "application/json",
+      },
+    });
   }
 };

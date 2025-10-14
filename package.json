@@ -10,7 +10,7 @@
   "dependencies": {
     "@bitcoinerlab/secp256k1": "^1.2.0",
     "@netlify/blobs": "^10.1.0",
-    "@netlify/functions": "^4.3.0",
+    "@netlify/functions": "^5.0.0",
     "@swan-bitcoin/xpub-lib": "^0.3.0",
     "qr-code-styling": "^1.9.2"
   },

@@ -15,7 +15,7 @@ A simple, self-custodial solution for accepting private, on-chain Bitcoin donati
 - **Private**: No third-party payment processors, middlemen, or KYC requirements. Automatically rotate addresses for privacy.
 - **Free**: Free hosting on Netlify, Vercel, or Cloudflare. Minimal codebase, easy to integrate into your existing project.
 
-## 📦 Installation
+## 📦 Local Installation
 
 1. **Clone repository**
    ```bash
@@ -34,12 +34,7 @@ A simple, self-custodial solution for accepting private, on-chain Bitcoin donati
    ```
 4. **Deploy to Netlify** and set both environment variables in your deployment settings
 
-### Environment Variables
-
-- **`BITCOIN_XPUB`** (required): Extended public key (XPUB) for the Bitcoin wallet account you wish to use
-- **`BITCOIN_DERIVATION_PATH`** (required): The derivation path to use for address generation
-
-**Important**: Your XPUB and derivation path should correspond to the account level (e.g., `m/84'/0'/0'` for BIP84). The system will automatically generate receiving addresses. See [ADDRESS_POOL_README.md](ADDRESS_POOL_README.md) for detailed setup instructions.
+**Important**: See [ADDRESS_POOL_README.md](ADDRESS_POOL_README.md) for detailed guidance on setting your environment variables.
 
 ## 🏗️ How It Works
 
@@ -75,7 +70,7 @@ Addresses served from the endpoint are cached in browser `localStorage` for 10 m
 └── netlify.toml                   # Deployment configuration
 ```
 
-## 📚 API Endpoints
+## 📚 API Endpoint
 
 ### GET `/api/get-address`
 
@@ -88,17 +83,6 @@ Returns the current Bitcoin address for payments.
   "address": "bc1q..."
 }
 ```
-
-## 🗑️ Cache Management
-
-The address pool cache is **automatically invalidated** when you change your XPUB or derivation path. The system uses environment-based cache keys, so changing these variables will automatically generate fresh addresses without manual intervention.
-
-If you need to manually clear the cache for other reasons, you can do so through:
-
-- **Netlify CLI**: `netlify blobs:delete address-pool pool-state-<hash>`
-- **Netlify Dashboard**: Go to your Project → Blobs → Delete the relevant blob from the `address-pool` store
-
-The address pool will automatically regenerate when needed.
 
 ## 🤝 Contributing
 

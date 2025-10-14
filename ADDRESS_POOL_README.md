@@ -43,6 +43,17 @@ Ensure to enclose all values in double inverted commas, e.g. `BITCOIN_DERIVATION
 - Both environment variables are required for maximum robustness and flexibility
 - When testing your setup, be sure to check that the derived addresses **match those you see in your wallet software**. This is a _vital_ step in ensuring you receive any funds that are sent to you.
 
+## 🗑️ Cache Management
+
+The address pool cache is **automatically invalidated** when you change your XPUB or derivation path. The system uses environment-based cache keys, so changing these variables will automatically generate fresh addresses without manual intervention.
+
+If you need to manually clear the cache for other reasons, you can do so through:
+
+- **Netlify CLI**: `netlify blobs:delete address-pool pool-state-<hash>`
+- **Netlify Dashboard**: Go to your Project → Blobs → Delete the relevant blob from the `address-pool` store
+
+The address pool will automatically regenerate when needed.
+
 ## Dependencies
 
 The system uses the following npm packages:

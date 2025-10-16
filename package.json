@@ -5,7 +5,8 @@
   "license": "MIT",
   "type": "module",
   "scripts": {
-    "dev": "netlify dev"
+    "dev": "netlify dev",
+    "build": "node build.js"
   },
   "dependencies": {
     "@bitcoinerlab/secp256k1": "^1.2.0",
@@ -14,7 +15,31 @@
     "@swan-bitcoin/xpub-lib": "^0.3.0",
     "qr-code-styling": "^1.9.2"
   },
+  "peerDependencies": {
+    "qr-code-styling": "^1.9.2"
+  },
   "devDependencies": {
-    "netlify-cli": "^23.9.1"
-  }
+    "cssnano": "^7.1.1",
+    "netlify-cli": "^23.9.1",
+    "postcss": "^8.5.6",
+    "terser": "^5.44.0"
+  },
+  "main": "dist/bitcoin-pay.min.js",
+  "module": "dist/bitcoin-pay.esm.js",
+  "exports": {
+    ".": {
+      "import": "./dist/bitcoin-pay.esm.js",
+      "require": "./dist/bitcoin-pay.min.js",
+      "default": "./dist/bitcoin-pay.min.js"
+    },
+    "./esm": "./dist/bitcoin-pay.esm.js",
+    "./cdn": "./dist/bitcoin-pay.min.js",
+    "./css": "./dist/bitcoin-pay.min.css"
+  },
+  "files": [
+    "dist/",
+    "src/",
+    "functions/",
+    "README.md"
+  ]
 }

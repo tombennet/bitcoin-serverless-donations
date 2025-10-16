@@ -7,7 +7,7 @@ import QRCodeStyling from "qr-code-styling";
 
 class BitcoinPay {
   constructor() {
-    this.version = "1.0.0";
+    this.version = "1.0.1";
     this.defaultConfig = {
       width: 200,
       height: 200,

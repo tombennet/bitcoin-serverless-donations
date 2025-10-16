@@ -2,6 +2,8 @@
 
 This system provides a dynamic XPUB-based address pool that automatically rotates Bitcoin addresses every 10 minutes, ensuring privacy and minimising odds of address reuse.
 
+> **Note**: This is the backend documentation. For frontend integration with the `BitcoinPay()` wrapper, see the main [README.md](README.md).
+
 ## How It Works
 
 1. **XPUB Derivation**: Addresses are derived from a Bitcoin XPUB using [Swan's XPUB tool](https://github.com/swan-bitcoin/xpub-tool). This is deterministic - the same XPUB always generates the same addresses in the same order.

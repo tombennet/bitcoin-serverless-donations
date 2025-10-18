@@ -2,7 +2,9 @@
 
 A simple, self-custodial solution for accepting private, on-chain Bitcoin donations with minimal overhead and a good level of privacy.
 
-This repository contains both the serverless backend and an npm package which serves as the frontend.
+This repository contains both the serverless backend and an npm package which serves as the frontend. You can see a [live demo on my blog](https://bennet.org/blog/private-serverless-bitcoin-payments-for-indie-devs/).
+
+![Bitcoin Serverless Payments widget](/src/preview.png)
 
 ## ✨ Features
 
@@ -75,14 +77,14 @@ The simplest approach is to add the CDN versions of the script and stylesheet, a
 
 The fastest way to get started is to load the script via CDN using a basic `<script>` tag (shown above in Quick Start). Alternatively, if you're using a bundler like Vite, you can install this library - and its QR code dependency - as ES modules using npm:
 
-```
+```bash
 npm install bitcoin-serverless-payments qr-code-styling
 ```
 
 Then import the script and styles into your project:
 
-```
-import { BitcoinPay } from 'bitcoin-serverless-payments';
+```javascript
+import { BitcoinPay } from "bitcoin-serverless-payments";
 import "bitcoin-serverless-payments/css";
 ```
 
@@ -94,9 +96,9 @@ Once you've loaded the script, you can use the `BitcoinPay()` function.
 
 The `BitcoinPay()` function expects 3 parameters:
 
-- `element`: A unique element ID into which it will render the payment widget
-- `endpoint`: The full URL of your backend function - by default it will live at `/.netlify/functions/get-address` on whichever domain you deployed to
-- `fallbackAddress`: The Bitcoin address to use if your backend function is ever unavailable
+- `element`: A unique element ID into which it will render the payment widget.
+- `endpoint`: The full URL of your backend function - by default it will live at `/.netlify/functions/get-address` on whichever domain you deployed to.
+- `fallbackAddress`: The Bitcoin address to use if your backend function is ever unavailable. I'd suggest picking the first unused address from the account associated with your XPUB.
 
 For example:
 
@@ -114,7 +116,7 @@ For example:
 
 ### Bitcoin + Lightning support
 
-You also have the option of a two-panel layout, supporting boith Bitcoin and Lightning payments. You'll need a static [Lightning address](https://lightningaddress.com/) to use this option.
+You also have the option of a two-panel layout, supporting both Bitcoin and Lightning payments. You'll need a static [Lightning address](https://lightningaddress.com/) to use this option.
 
 ```html
 <script>

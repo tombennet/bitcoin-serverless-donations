@@ -1,6 +1,6 @@
 {
   "name": "bitcoin-serverless-payments",
-  "version": "1.0.4",
+  "version": "1.0.6",
   "author": "https://github.com/tombennet/bitcoin-serverless-payments",
   "license": "MIT",
   "repository": {
@@ -47,6 +47,7 @@
     "dist/",
     "src/",
     "functions/",
-    "README.md"
+    "README.md",
+    "TECHNICAL.md"
   ]
 }

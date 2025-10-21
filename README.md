@@ -183,16 +183,22 @@ The frontend script:
 └── netlify.toml                   # Deployment configuration
 ```
 
-## 🔧 Browser Support
+## 🧪 Testing
 
-- Modern browsers with ES6+ support
-- Requires `fetch` API (available in all modern browsers)
-- Requires `localStorage` for caching
-- Requires `navigator.clipboard` for copy functionality
+Automated tests verify address derivation correctness across all supported BIP standards (44, 49, 84, 86) using official test vectors. Tests run on every push and weekly via GitHub Actions.
+
+```bash
+npm test              # Run once
+npm run test:watch    # Watch mode
+```
+
+**What's tested:** 5 tests validate that address generation matches official BIP specifications for Legacy (P2PKH), Nested SegWit (P2WPKH-in-P2SH), Native SegWit (P2WPKH), and Taproot (P2TR) addresses. If any dependency upgrade changes address derivation, tests will fail.
+
+**Before production:** Verify your XPUB generates expected addresses by comparing the first few addresses with your wallet software.
 
 ## 🤝 Contributing
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+Contributions are welcome! Please feel free to submit a Pull Request. Before submitting, please ensure all tests pass.
 
 ## 📄 License
 

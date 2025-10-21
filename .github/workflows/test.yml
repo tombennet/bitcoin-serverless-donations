@@ -1,0 +1,67 @@
+name: Test
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  # Run tests weekly to catch issues from external dependency updates
+  schedule:
+    - cron: "0 0 * * 0" # Every Sunday at midnight
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x, 22.x]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run tests
+        run: npm test
+
+      - name: Check for test failures
+        if: failure()
+        run: |
+          echo "⚠️ Tests failed! This could indicate:"
+          echo "1. A dependency update changed address derivation"
+          echo "2. Breaking changes in @swan-bitcoin/xpub-lib or @bitcoinerlab/secp256k1"
+          echo "3. Critical regression in address generation logic"
+          echo ""
+          echo "🔍 Review the test output above to identify which addresses changed."
+          echo "⚠️ DO NOT merge if address derivation has changed without thorough investigation!"
+
+  dependency-audit:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20.x"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run npm audit
+        run: npm audit --audit-level=moderate
+        continue-on-error: true
+
+      - name: Check for outdated dependencies
+        run: npm outdated
+        continue-on-error: true

@@ -56,20 +56,36 @@ The simplest approach is to add the CDN versions of the script and stylesheet, a
    npm install
    ```
 2. **Set your environment variables in `.env`**:
+
    ```bash
    BITCOIN_XPUB="xpub6..."
    BITCOIN_DERIVATION_PATH="m/84'/0'/0'"
    ```
+
 3. **Test locally**, making sure that the derived addresses match those you see in your wallet software
    ```bash
    netlify dev
    ```
-4. **Deploy to Netlify**, and set both environment variables in your deployment settings. Your function's endpoint will be available this path:
+4. **Deploy to Netlify**, and set both environment variables in your deployment settings. Your function's endpoint will be available at this path:
+
    ```bash
     /.netlify/functions/get-address
    ```
 
-**Important**: See [ADDRESS_POOL_README.md](ADDRESS_POOL_README.md) for detailed guidance on setting your environment variables and understanding the address pool system.
+**Common Derivation Paths:**
+
+- **BIP84 (P2WPKH)**: `m/84'/0'/0'` - Native SegWit, most common for modern wallets (bech32 addresses starting with `bc1q`). Extended public keys begin with `zpub`.
+- **BIP86 (P2TR)**: `m/86'/0'/0'` - Taproot (bech32m addresses starting with `bc1p`). Extended public keys begin with `xpub`.
+- **BIP44 (P2PKH)**: `m/44'/0'/0'` - Legacy addresses (base58 format). Extended public keys begin with `xpub`.
+- **BIP49 (P2WPKH-in-P2SH)**: `m/49'/0'/0'` - Nested SegWit (P2SH addresses starting with `3`). Extended public keys begin with `ypub`.
+
+**Important Notes:**
+
+- Your XPUB should be from the **account level** (e.g., `m/84'/0'/0'`). The system automatically derives receiving addresses (`/0/index`) from your account-level XPUB.
+- For example, if your XPUB is derived from `m/84'/0'/0'`, the system will generate addresses at `m/84'/0'/0'/0/index`
+- Ensure values are enclosed in quotes, e.g. `BITCOIN_DERIVATION_PATH="m/84'/0'/0'"`
+
+**Advanced users**: See [TECHNICAL.md](TECHNICAL.md) for implementation details, cache management, and troubleshooting.
 
 ## 🎨 Frontend Setup
 
@@ -141,6 +157,8 @@ If you want full control over the design or behaviour, you can build your own fr
 {"address":"bc1q..."}
 ```
 
+**Important**: Whichever route you take, always verify that your XPUB generates expected addresses by comparing the first few addresses with your wallet software. This is critical to ensure you can receive funds.
+
 ## 🏗️ How It Works
 
 ### Backend (Serverless function)
@@ -179,22 +197,9 @@ The frontend script:
 │   ├── bitcoin-pay.esm.js      # ES Module
 │   ├── bitcoin-pay.min.css     # Frontend styles
 │   └── index.html                 # Demo page
-├── ADDRESS_POOL_README.md         # Detailed backend documentation
+├── TECHNICAL.md                   # Advanced implementation details
 └── netlify.toml                   # Deployment configuration
 ```
-
-## 🧪 Testing
-
-Automated tests verify address derivation correctness across all supported BIP standards (44, 49, 84, 86) using official test vectors. Tests run on every push and weekly via GitHub Actions.
-
-```bash
-npm test              # Run once
-npm run test:watch    # Watch mode
-```
-
-**What's tested:** 5 tests validate that address generation matches official BIP specifications for Legacy (P2PKH), Nested SegWit (P2WPKH-in-P2SH), Native SegWit (P2WPKH), and Taproot (P2TR) addresses. If any dependency upgrade changes address derivation, tests will fail.
-
-**Before production:** Verify your XPUB generates expected addresses by comparing the first few addresses with your wallet software.
 
 ## 🤝 Contributing
 

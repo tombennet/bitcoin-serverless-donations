@@ -3,6 +3,10 @@
   "version": "1.0.4",
   "author": "https://github.com/tombennet/bitcoin-serverless-payments",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tombennet/bitcoin-serverless-payments.git"
+  },
   "type": "module",
   "scripts": {
     "dev": "netlify dev",

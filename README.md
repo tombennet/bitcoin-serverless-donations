@@ -149,13 +149,19 @@ You also have the option of a two-panel layout, supporting both Bitcoin and Ligh
 
 You can have multiple Bitcoin payment widgets on the same page by using different element IDs and calling `BitcoinPay.render()` multiple times.
 
-### Roll your own
+### Customization
 
-If you want full control over the design or behaviour, you can build your own frontend. Your backend function can be queried at `/.netlify/functions/get-address` and you'll get a JSON back containing your Bitcoin address:
+The widget can be fully customized using CSS custom properties (variables). You can change colors, spacing, typography, and more to match your site's design. **Dark mode is supported automatically** based on the user's system preferences.
 
+```css
+.bitcoin-pay-widget {
+  --btc-pay-primary: #2563eb;
+  --btc-pay-primary-hover: #1d4ed8;
+  --btc-pay-border-radius: 4px;
+}
 ```
-{"address":"bc1q..."}
-```
+
+Refer to [bitcoin-pay.css](/src/bitcoin-pay.css) to see the full list of variables.
 
 **Important**: Whichever route you take, always verify that your XPUB generates expected addresses by comparing the first few addresses with your wallet software. This is critical to ensure you can receive funds.
 

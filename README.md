@@ -181,26 +181,6 @@ The frontend script:
 - Falls back to your specified address if the API is unavailable
 - Supports both Bitcoin-only and Bitcoin + Lightning layouts
 
-## 📁 Project Structure
-
-```
-├── functions/
-│   └── get-address/
-│       ├── index.mts              # Main serverless function
-│       ├── address-pool.ts        # Address pool management
-│       └── validation.ts          # Environment validation utilities
-├── src/
-│   ├── bitcoin-pay.js          # Frontend wrapper source
-│   └── bitcoin-pay.css         # Frontend styles
-├── dist/
-│   ├── bitcoin-pay.min.js      # Minified frontend library
-│   ├── bitcoin-pay.esm.js      # ES Module
-│   ├── bitcoin-pay.min.css     # Frontend styles
-│   └── index.html                 # Demo page
-├── TECHNICAL.md                   # Advanced implementation details
-└── netlify.toml                   # Deployment configuration
-```
-
 ## 🤝 Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request. Before submitting, please ensure all tests pass.

@@ -128,6 +128,9 @@
 .bitcoin-pay-widget .qr-container {
   margin-bottom: var(--btc-pay-spacing-md);
   display: block;
+  cursor: pointer;
+  text-decoration: none;
+  position: relative;
 }
 
 .bitcoin-pay-widget .content-area {

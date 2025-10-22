@@ -229,7 +229,9 @@ class BitcoinPay {
     return `
       <div class="bitcoin-pay-widget">
         <div class="widget-layout">
-          <div id="${qrContainerId}" class="qr-container"></div>
+          <a href="bitcoin:${address}" class="qr-container" aria-label="Open in Bitcoin wallet">
+            <div id="${qrContainerId}" class="qr-code"></div>
+          </a>
           <div class="content-area">
             <p class="description">
               Scan with your Bitcoin wallet, or copy the on-chain address below.
@@ -292,7 +294,9 @@ class BitcoinPay {
           <!-- Bitcoin Tab Content -->
           <div id="bitcoin-content-${instanceId}" class="tab-content active" data-tab="bitcoin">
             <div class="widget-layout">
-              <div id="${bitcoinQrId}" class="qr-container"></div>
+              <a href="bitcoin:${address}" class="qr-container" aria-label="Open in Bitcoin wallet">
+                <div id="${bitcoinQrId}" class="qr-code"></div>
+              </a>
               <div class="content-area">
                 <p class="description">
                   Scan with your Bitcoin wallet, or copy the on-chain address below.
@@ -314,7 +318,9 @@ class BitcoinPay {
           <!-- Lightning Tab Content -->
           <div id="lightning-content-${instanceId}" class="tab-content" data-tab="lightning">
             <div class="widget-layout">
-              <div id="${lightningQrId}" class="qr-container"></div>
+              <a href="lightning:${lightning}" class="qr-container" aria-label="Open in Lightning wallet">
+                <div id="${lightningQrId}" class="qr-code"></div>
+              </a>
               <div class="content-area">
                 <p class="description">
                   Scan with your Lightning wallet, or copy my Lightning address below.

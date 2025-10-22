@@ -1,6 +1,6 @@
 {
   "name": "bitcoin-serverless-payments",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "author": "https://github.com/tombennet/bitcoin-serverless-payments",
   "license": "MIT",
   "repository": {
@@ -16,8 +16,8 @@
   },
   "dependencies": {
     "@bitcoinerlab/secp256k1": "^1.2.0",
-    "@netlify/blobs": "^10.1.0",
-    "@netlify/functions": "^5.0.0",
+    "@netlify/blobs": "^10.2.0",
+    "@netlify/functions": "^5.0.1",
     "@swan-bitcoin/xpub-lib": "^0.3.0",
     "qr-code-styling": "^1.9.2"
   },
@@ -29,7 +29,7 @@
     "netlify-cli": "^23.9.2",
     "postcss": "^8.5.6",
     "terser": "^5.44.0",
-    "vitest": "^3.2.4"
+    "vitest": "^4.0.1"
   },
   "main": "dist/bitcoin-pay.min.js",
   "module": "dist/bitcoin-pay.esm.js",

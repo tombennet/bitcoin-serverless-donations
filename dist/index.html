@@ -23,6 +23,23 @@
         border-radius: 3px;
         font-family: "Monaco", "Menlo", monospace;
       }
+
+      @media (prefers-color-scheme: dark) {
+        body {
+          background-color: #1a1a1a;
+          color: #e0e0e0;
+        }
+        code {
+          background: #2a2a2a;
+          color: #e0e0e0;
+        }
+        a {
+          color: #60a5fa;
+        }
+        a:hover {
+          color: #93c5fd;
+        }
+      }
     </style>
   </head>
   <body>
@@ -45,14 +62,14 @@
     <div id="bitcoin-donate-lightning"></div>
 
     <p>
-      For full instructions, see the repository
+      For full instructions, see the
       <a href="https://github.com/tombennet/bitcoin-serverless-payments"
-        >Readme on GitHub</a
+        >GitHub repository</a
       >
-      or the
+      or read
       <a
         href="https://bennet.org/blog/private-serverless-bitcoin-payments-for-indie-devs/"
-        >my blog post</a
+        >the blog post</a
       >.
     </p>
     <!-- Load the script -->

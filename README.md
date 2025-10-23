@@ -37,7 +37,7 @@ The simplest approach is to add the CDN versions of the script and stylesheet, a
 <script>
   BitcoinPay.render({
     endpoint: "https://your-site.netlify.app/.netlify/functions/get-address",
-    element: "#bitcoin-donate",
+    selector: "#bitcoin-donate",
     fallbackAddress: "bc1q...",
   }).catch((error) => {
     console.error("Failed to render Bitcoin widget:", error);
@@ -112,7 +112,7 @@ Once you've loaded the script, you can use the `BitcoinPay()` function.
 
 The `BitcoinPay()` function expects 3 parameters:
 
-- `element`: A unique element ID into which it will render the payment widget.
+- `selector`: A CSS selector for the element(s) into which it will render the payment widget (e.g., `#bitcoin-donate` or `.donation-widget`).
 - `endpoint`: The full URL of your backend function - by default it will live at `/.netlify/functions/get-address` on whichever domain you deployed to.
 - `fallbackAddress`: The Bitcoin address to use if your backend function is ever unavailable. I'd suggest picking the first unused address from the account associated with your XPUB.
 
@@ -121,7 +121,7 @@ For example:
 ```html
 <script>
   BitcoinPay.render({
-    element: "#bitcoin-donate",
+    selector: "#bitcoin-donate",
     endpoint: "https://your-site.netlify.app/.netlify/functions/get-address",
     fallbackAddress: "bc1q...",
   }).catch((error) => {
@@ -137,7 +137,7 @@ You also have the option of a two-panel layout, supporting both Bitcoin and Ligh
 ```html
 <script>
   BitcoinPay.render({
-    element: "#bitcoin-donate",
+    selector: "#bitcoin-donate",
     endpoint: "https://your-site.netlify.app/.netlify/functions/get-address",
     fallbackAddress: "bc1q...",
     lightning: "yourname@provider.com",
@@ -147,7 +147,7 @@ You also have the option of a two-panel layout, supporting both Bitcoin and Ligh
 </script>
 ```
 
-You can have multiple Bitcoin payment widgets on the same page by using different element IDs and calling `BitcoinPay.render()` multiple times.
+You can have multiple Bitcoin payment widgets on the same page by passing in a class selector (e.g., `.donation-widget`). Alternatively you can call `BitcoinPay.render()` multiple times with a different element each time.
 
 ### Customization
 

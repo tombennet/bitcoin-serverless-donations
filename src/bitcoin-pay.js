@@ -234,7 +234,9 @@ class BitcoinPay {
           </a>
           <div class="content-area">
             <p class="description">
-              Scan with your Bitcoin wallet, or copy the on-chain address below.
+              <span class="prefix-desktop">Scan with</span>
+              <span class="prefix-touch">Tap to open</span>
+              your Bitcoin wallet, or copy the on-chain address below.
             </p>
             <div class="address-container">
               <div class="address-text">
@@ -299,7 +301,9 @@ class BitcoinPay {
               </a>
               <div class="content-area">
                 <p class="description">
-                  Scan with your Bitcoin wallet, or copy the on-chain address below.
+                  <span class="prefix-desktop">Scan with</span>
+                  <span class="prefix-touch">Tap to open</span>
+                  your Bitcoin wallet, or copy the on-chain address below.
                 </p>
                 <div class="address-container">
                   <div class="address-text">
@@ -323,7 +327,9 @@ class BitcoinPay {
               </a>
               <div class="content-area">
                 <p class="description">
-                  Scan with your Lightning wallet, or copy my Lightning address below.
+                  <span class="prefix-desktop">Scan with</span>
+                  <span class="prefix-touch">Tap to open</span>
+                  your Lightning wallet, or copy my Lightning address below.
                 </p>
                 <div class="address-container">
                   <div class="address-text">

@@ -147,6 +147,20 @@
   width: 100%;
 }
 
+/* Input-type responsive text prefixes */
+.bitcoin-pay-widget .description .prefix-touch {
+  display: none;
+}
+
+@media (hover: none) and (pointer: coarse) {
+  .bitcoin-pay-widget .description .prefix-desktop {
+    display: none;
+  }
+  .bitcoin-pay-widget .description .prefix-touch {
+    display: inline;
+  }
+}
+
 .bitcoin-pay-widget .address-container {
   display: flex;
   align-items: center;

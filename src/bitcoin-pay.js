@@ -28,15 +28,16 @@ class BitcoinPay {
    * Static method to render the Bitcoin donation widget
    * @param {Object} config - Configuration object
    * @param {string} config.endpoint - The serverless function endpoint URL
-   * @param {string} config.element - CSS selector for the target element
+   * @param {string} config.selector - CSS selector for the target element(s)
    * @param {string} config.lightning - Optional Lightning address (e.g. "name@provider.com")
    * @param {string} config.fallbackAddress - Fallback on-chain address to use if the serverless function fails
    * @param {Object} config.options - Optional configuration overrides
+   * @returns {Promise<Array>} Array of results for each element (with status and value/reason)
    */
   static async render(config) {
     const {
       endpoint,
-      element,
+      selector,
       lightning,
       fallbackAddress,
       options = {},
@@ -50,13 +51,13 @@ class BitcoinPay {
       throw new Error("BitcoinPay: fallbackAddress is required");
     }
 
-    if (!element) {
-      throw new Error("BitcoinPay: element selector is required");
+    if (!selector) {
+      throw new Error("BitcoinPay: selector is required");
     }
 
-    const targetElement = document.querySelector(element);
-    if (!targetElement) {
-      throw new Error(`BitcoinPay: element "${element}" not found`);
+    const targetElements = document.querySelectorAll(selector);
+    if (targetElements.length === 0) {
+      throw new Error(`BitcoinPay: no elements found matching "${selector}"`);
     }
 
     // Create instance for default config and utility methods
@@ -64,9 +65,6 @@ class BitcoinPay {
 
     // Merge user options with defaults
     const finalConfig = { ...instance.defaultConfig, ...options };
-
-    // Create unique keys for this instance (for DOM elements)
-    const instanceId = instance.generateInstanceId();
 
     // Create stable cache keys based on endpoint (UTF-8 safe)
     const endpointHash = btoa(unescape(encodeURIComponent(endpoint))).replace(
@@ -76,43 +74,72 @@ class BitcoinPay {
     const addressKey = `btc-address-${endpointHash}`;
     const timestampKey = `btc-timestamp-${endpointHash}`;
 
+    // Fetch the Bitcoin address once (shared across all elements)
+    let address;
     try {
-      // Get Bitcoin address
-      const address = await instance.getBitcoinAddress(
+      address = await instance.getBitcoinAddress(
         endpoint,
         addressKey,
         timestampKey,
         finalConfig,
         fallbackAddress
       );
+    } catch (error) {
+      // If address fetch fails, all elements fail
+      console.error("BitcoinPay: Failed to fetch address", error);
+      const errorHTML = `<div style="color: red; padding: 10px; border: 1px solid red; border-radius: 4px;">
+        Failed to load Bitcoin payment widget. Please check your configuration.
+      </div>`;
+      targetElements.forEach((el) => {
+        el.innerHTML = errorHTML;
+      });
+      throw error;
+    }
 
+    // Render to each element independently
+    const renderPromises = Array.from(targetElements).map((targetElement) =>
+      instance.renderToElement(targetElement, address, lightning, finalConfig)
+    );
+
+    // Use allSettled so one failure doesn't break others
+    const results = await Promise.allSettled(renderPromises);
+    return results;
+  }
+
+  /**
+   * Render widget to a single element
+   * @private
+   */
+  async renderToElement(targetElement, address, lightning, finalConfig) {
+    // Create unique keys for this instance (for DOM elements)
+    const instanceId = this.generateInstanceId();
+
+    try {
       // Create the widget HTML (single or dual mode)
       const widgetHTML = lightning
-        ? instance.createDualWidgetHTML(
-            address,
-            lightning,
-            finalConfig,
-            instanceId
-          )
-        : instance.createSingleWidgetHTML(address, finalConfig, instanceId);
+        ? this.createDualWidgetHTML(address, lightning, finalConfig, instanceId)
+        : this.createSingleWidgetHTML(address, finalConfig, instanceId);
       targetElement.innerHTML = widgetHTML;
 
       // Initialize QR code and copy functionality
       if (lightning) {
-        await instance.initializeDualWidget(
+        await this.initializeDualWidget(
           address,
           lightning,
           finalConfig,
           instanceId
         );
       } else {
-        await instance.initializeSingleWidget(address, finalConfig, instanceId);
+        await this.initializeSingleWidget(address, finalConfig, instanceId);
       }
+
+      return { success: true, element: targetElement };
     } catch (error) {
-      console.error("BitcoinPay: Failed to initialize", error);
+      console.error("BitcoinPay: Failed to initialize widget", error);
       targetElement.innerHTML = `<div style="color: red; padding: 10px; border: 1px solid red; border-radius: 4px;">
         Failed to load Bitcoin payment widget. Please check your configuration.
       </div>`;
+      throw error;
     }
   }
 

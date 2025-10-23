@@ -78,7 +78,7 @@
     <script>
       // Basic usage
       BitcoinPay.render({
-        element: "#bitcoin-donate-basic",
+        selector: "#bitcoin-donate-basic",
         endpoint: "/.netlify/functions/get-address",
         fallbackAddress: "bc1qtcp67ktfdcwfc7t3krwy8ttuqznrjldsuh5gsd",
       }).catch((error) => {
@@ -87,7 +87,7 @@
 
       // Bitcoin + Lightning configuration
       BitcoinPay.render({
-        element: "#bitcoin-donate-lightning",
+        selector: "#bitcoin-donate-lightning",
         endpoint: "/.netlify/functions/get-address",
         lightning: "bennet@walletofsatoshi.com",
         fallbackAddress: "bc1qtcp67ktfdcwfc7t3krwy8ttuqznrjldsuh5gsd",

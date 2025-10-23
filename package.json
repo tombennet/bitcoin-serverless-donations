@@ -18,11 +18,7 @@
     "@bitcoinerlab/secp256k1": "^1.2.0",
     "@netlify/blobs": "^10.2.0",
     "@netlify/functions": "^5.0.1",
-    "@swan-bitcoin/xpub-lib": "^0.3.0",
-    "qr-code-styling": "^1.9.2"
-  },
-  "peerDependencies": {
-    "qr-code-styling": "^1.9.2"
+    "@swan-bitcoin/xpub-lib": "^0.3.0"
   },
   "devDependencies": {
     "cssnano": "^7.1.1",

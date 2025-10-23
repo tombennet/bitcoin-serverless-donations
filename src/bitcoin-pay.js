@@ -3,7 +3,7 @@
  * A simple, self-custodial solution for accepting private, on-chain Bitcoin payments
  */
 
-import QRCodeStyling from "qr-code-styling";
+import generateQrSvg from "./qr.js";
 
 class BitcoinPay {
   constructor() {
@@ -16,11 +16,10 @@ class BitcoinPay {
       copiedText: "Copied!",
       cacheDuration: 10 * 60 * 1000, // 10 minutes
       qrCodeOptions: {
-        type: "canvas",
-        bitcoinImage:
-          "data:image/svg+xml;base64,PHN2ZyB4bWxuczpyZGY9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjItcmRmLXN5bnRheC1ucyMiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgaGVpZ2h0PSI2NCIgd2lkdGg9IjY0IiB2ZXJzaW9uPSIxLjEiIHhtbG5zOmRjPSJodHRwOi8vcHVybC5vcmcvZGMvZWxlbWVudHMvMS4xLyI+CjxnIHRyYW5zZm9ybT0idHJhbnNsYXRlKDAuMDA2MzA4NzYsLTAuMDAzMDE5ODQpIj4KPHBhdGggZmlsbD0iI2Y3OTMxYSIgZD0ibTYzLjAzMywzOS43NDRjLTQuMjc0LDE3LjE0My0yMS42MzcsMjcuNTc2LTM4Ljc4MiwyMy4zMDEtMTcuMTM4LTQuMjc0LTI3LjU3MS0yMS42MzgtMjMuMjk1LTM4Ljc4LDQuMjcyLTE3LjE0NSwyMS42MzUtMjcuNTc5LDM4Ljc3NS0yMy4zMDUsMTcuMTQ0LDQuMjc0LDI3LjU3NiwyMS42NCwyMy4zMDIsMzguNzg0eiIvPgo8cGF0aCBmaWxsPSIjRkZGIiBkPSJtNDYuMTAzLDI3LjQ0NGMwLjYzNy00LjI1OC0yLjYwNS02LjU0Ny03LjAzOC04LjA3NGwxLjQzOC01Ljc2OC0zLjUxMS0wLjg3NS0xLjQsNS42MTZjLTAuOTIzLTAuMjMtMS44NzEtMC40NDctMi44MTMtMC42NjJsMS40MS01LjY1My0zLjUwOS0wLjg3NS0xLjQzOSw1Ljc2NmMtMC43NjQtMC4xNzQtMS41MTQtMC4zNDYtMi4yNDItMC41MjdsMC4wMDQtMC4wMTgtNC44NDItMS4yMDktMC45MzQsMy43NXMyLjYwNSwwLjU5NywyLjU1LDAuNjM0YzEuNDIyLDAuMzU1LDEuNjc5LDEuMjk2LDEuNjM2LDIuMDQybC0xLjYzOCw2LjU3MWMwLjA5OCwwLjAyNSwwLjIyNSwwLjA2MSwwLjM2NSwwLjExNy0wLjExNy0wLjAyOS0wLjI0Mi0wLjA2MS0wLjM3MS0wLjA5MmwtMi4yOTYsOS4yMDVjLTAuMTc0LDAuNDMyLTAuNjE1LDEuMDgtMS42MDksMC44MzQsMC4wMzUsMC4wNTEtMi41NTItMC42MzctMi41NTItMC42MzdsLTEuNzQzLDQuMDE5LDQuNTY5LDEuMTM5YzAuODUsMC4yMTMsMS42ODMsMC40MzYsMi41MDMsMC42NDZsLTEuNDUzLDUuODM0LDMuNTA3LDAuODc1LDEuNDM5LTUuNzcyYzAuOTU4LDAuMjYsMS44ODgsMC41LDIuNzk4LDAuNzI2bC0xLjQzNCw1Ljc0NSwzLjUxMSwwLjg3NSwxLjQ1My01LjgyM2M1Ljk4NywxLjEzMywxMC40ODksMC42NzYsMTIuMzg0LTQuNzM5LDEuNTI3LTQuMzYtMC4wNzYtNi44NzUtMy4yMjYtOC41MTUsMi4yOTQtMC41MjksNC4wMjItMi4wMzgsNC40ODMtNS4xNTV6bS04LjAyMiwxMS4yNDljLTEuMDg1LDQuMzYtOC40MjYsMi4wMDMtMTAuODA2LDEuNDEybDEuOTI4LTcuNzI5YzIuMzgsMC41OTQsMTAuMDEyLDEuNzcsOC44NzgsNi4zMTd6bTEuMDg2LTExLjMxMmMtMC45OSwzLjk2Ni03LjEsMS45NTEtOS4wODIsMS40NTdsMS43NDgtNy4wMWMxLjk4MiwwLjQ5NCw4LjM2NSwxLjQxNiw3LjMzNCw1LjU1M3oiLz4KPC9nPgo8L3N2Zz4K",
-        lightningImage:
-          "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjgyIiBoZWlnaHQ9IjI4MiIgdmlld0JveD0iMCAwIDI4MiAyODIiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxnIGNsaXAtcGF0aD0idXJsKCNjbGlwMCkiPgo8Y2lyY2xlIGN4PSIxNDAuOTgzIiBjeT0iMTQxLjAwMyIgcj0iMTQxIiBmaWxsPSIjN0IxQUY3Ii8+CjxwYXRoIGQ9Ik03OS43NjA5IDE0NC4wNDdMMTczLjc2MSA2My4wNDY2QzE3Ny44NTcgNjAuNDIzNSAxODEuNzYxIDYzLjA0NjYgMTc5LjI2MSA2Ny41NDY2TDE0OS4yNjEgMTI2LjU0N0gyMDIuNzYxQzIwMi43NjEgMTI2LjU0NyAyMTEuMjYxIDEyNi41NDcgMjAyLjc2MSAxMzMuNTQ3TDExMC4yNjEgMjE1LjA0N0MxMDMuNzYxIDIyMC41NDcgOTkuMjYxIDIxNy41NDcgMTAzLjc2MSAyMDkuMDQ3TDEzMi43NjEgMTUxLjU0N0g3OS43NjA5Qzc5Ljc2MDkgMTUxLjU0NyA3MS4yNjA5IDE1MS41NDcgNzkuNzYwOSAxNDQuMDQ3WiIgZmlsbD0id2hpdGUiLz4KPC9nPgo8ZGVmcz4KPGNsaXBQYXRoIGlkPSJjbGlwMCI+CjxyZWN0IHdpZHRoPSIyODIiIGhlaWdodD0iMjgyIiBmaWxsPSJ3aGl0ZSIvPgo8L2NsaXBQYXRoPgo8L2RlZnM+Cjwvc3ZnPgo=",
+        ecc: "H",
+        logo: "btc", // 'btc' | 'lightning' | undefined
+        bitcoinImage: "__BITCOIN_LOGO__",
+        lightningImage: "__LIGHTNING_LOGO__",
       },
     };
   }
@@ -357,17 +356,19 @@ class BitcoinPay {
     const buttonId = `btc-btn-${instanceId}`;
 
     // Render QR code
-    const qrCode = new QRCodeStyling({
-      width: config.width,
-      height: config.height,
-      type: config.qrCodeOptions.type,
-      data: `bitcoin:${address}`,
-      image: config.qrCodeOptions.bitcoinImage,
-    });
-
     const qrContainer = document.getElementById(qrContainerId);
     if (qrContainer) {
-      qrCode.append(qrContainer);
+      const logoHref =
+        config.qrCodeOptions.logo === "btc"
+          ? this.defaultConfig.qrCodeOptions.bitcoinImage
+          : undefined;
+      const svg = generateQrSvg({
+        text: `bitcoin:${address}`,
+        size: config.width,
+        logoHref,
+        alt: "Bitcoin address QR",
+      });
+      qrContainer.innerHTML = svg;
     }
 
     // Initialize copy button
@@ -402,31 +403,27 @@ class BitcoinPay {
     const lightningBtnId = `lightning-btn-${instanceId}`;
 
     // Render Bitcoin QR code
-    const bitcoinQrCode = new QRCodeStyling({
-      width: config.width,
-      height: config.height,
-      type: config.qrCodeOptions.type,
-      data: `bitcoin:${address}`,
-      image: config.qrCodeOptions.bitcoinImage,
-    });
-
     const bitcoinQrContainer = document.getElementById(bitcoinQrId);
     if (bitcoinQrContainer) {
-      bitcoinQrCode.append(bitcoinQrContainer);
+      const svg = generateQrSvg({
+        text: `bitcoin:${address}`,
+        size: config.width,
+        logoHref: this.defaultConfig.qrCodeOptions.bitcoinImage,
+        alt: "Bitcoin address QR",
+      });
+      bitcoinQrContainer.innerHTML = svg;
     }
 
     // Render Lightning QR code
-    const lightningQrCode = new QRCodeStyling({
-      width: config.width,
-      height: config.height,
-      type: config.qrCodeOptions.type,
-      data: `lightning:${lightning}`,
-      image: config.qrCodeOptions.lightningImage,
-    });
-
     const lightningQrContainer = document.getElementById(lightningQrId);
     if (lightningQrContainer) {
-      lightningQrCode.append(lightningQrContainer);
+      const svg = generateQrSvg({
+        text: `lightning:${lightning}`,
+        size: config.width,
+        logoHref: this.defaultConfig.qrCodeOptions.lightningImage,
+        alt: "Lightning address QR",
+      });
+      lightningQrContainer.innerHTML = svg;
     }
 
     // Initialize tab switching

@@ -91,10 +91,10 @@ The simplest approach is to add the CDN versions of the script and stylesheet, a
 
 ### Add the library
 
-The fastest way to get started is to load the script via CDN using a basic `<script>` tag (shown above in Quick Start). Alternatively, if you're using a bundler like Vite, you can install this library - and its QR code dependency - as ES modules using npm:
+The fastest way to get started is to load the script via CDN using a basic `<script>` tag (shown above in Quick Start). Alternatively, if you're using a bundler like Vite, you can install this library as an ES module using npm:
 
 ```bash
-npm install bitcoin-serverless-payments qr-code-styling
+npm install bitcoin-serverless-payments
 ```
 
 Then import the script and styles into your project:
@@ -104,7 +104,7 @@ import { BitcoinPay } from "bitcoin-serverless-payments";
 import "bitcoin-serverless-payments/css";
 ```
 
-Loading it this way comes with several advantages, including a smaller bundle size and better caching thanks to tree-shaking and separated dependencies.
+Loading it this way comes with several advantages, including a smaller bundle size and better caching.
 
 Once you've loaded the script, you can use the `BitcoinPay()` function.
 

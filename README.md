@@ -4,7 +4,7 @@ A simple, self-custodial solution for accepting private, on-chain Bitcoin donati
 
 This repository contains both the serverless backend and an npm package which serves as the frontend. You can see a [live demo on my blog](https://bennet.org/blog/private-serverless-bitcoin-payments-for-indie-devs/).
 
-![Bitcoin Serverless Payments widget](/src/preview.png)
+![Bitcoin Serverless Payments widget](/src/img/preview.png)
 
 ## ✨ Features
 

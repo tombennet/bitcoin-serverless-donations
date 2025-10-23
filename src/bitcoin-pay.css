@@ -233,7 +233,6 @@
 
   .bitcoin-pay-widget .qr-container {
     margin-bottom: 0;
-    margin-right: var(--btc-pay-spacing-lg);
     flex-shrink: 0;
   }
 

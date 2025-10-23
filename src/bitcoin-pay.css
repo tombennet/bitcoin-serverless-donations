@@ -133,6 +133,14 @@
   position: relative;
 }
 
+.bitcoin-pay-widget .qr-code svg {
+  display: block;
+  width: 200px;
+  height: 200px;
+  max-width: 100%;
+  height: auto;
+}
+
 .bitcoin-pay-widget .content-area {
   display: flex;
   flex-direction: column;

@@ -7,7 +7,7 @@ import generateQrSvg from "./qr.js";
 
 class BitcoinPay {
   constructor() {
-    this.version = "1.0.1";
+    this.version = "0.0.0"; // Auto-injected from package.json during build
     this.defaultConfig = {
       width: 200,
       height: 200,

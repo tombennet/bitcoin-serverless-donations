@@ -20,9 +20,22 @@ async function build() {
       // Directory might already exist, ignore error
     }
 
+    // Read package.json for version
+    const packageJson = JSON.parse(
+      readFileSync(join(__dirname, "package.json"), "utf8")
+    );
+    const version = packageJson.version;
+
     // Read the source file
     const sourcePath = join(__dirname, "src", "bitcoin-pay.js");
     let sourceCode = readFileSync(sourcePath, "utf8");
+
+    // Inject version from package.json
+    sourceCode = sourceCode.replace(
+      /this\.version\s*=\s*"[^"]+";/,
+      `this.version = "${version}";`
+    );
+
     // Inline logo SVGs as data URIs via placeholder replacement
     const btcSvg = readFileSync(
       join(__dirname, "src", "img", "bitcoin.svg"),

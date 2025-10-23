@@ -1,6 +1,7 @@
 /* Bitcoin Serverless Payments Widget Styles */
 
-.bitcoin-pay-widget {
+/* CSS Variables - Use :where() for 0 specificity to allow easy user overrides */
+:where(.bitcoin-pay-widget) {
   /* Color Variables - Light Mode (Default) */
   --btc-pay-primary: #f7931a;
   --btc-pay-primary-hover: #e8830a;
@@ -39,8 +40,10 @@
 
   /* Animation Variables */
   --btc-pay-transition-speed: 0.2s;
+}
 
-  /* Apply base styles */
+/* Apply base styles */
+.bitcoin-pay-widget {
   font-family: var(--btc-pay-font-family);
   max-width: var(--btc-pay-max-width);
   margin: var(--btc-pay-spacing-md) auto;
@@ -253,7 +256,7 @@
 
 /* Dark Mode */
 @media (prefers-color-scheme: dark) {
-  .bitcoin-pay-widget {
+  :where(.bitcoin-pay-widget) {
     --btc-pay-primary: #f7931a;
     --btc-pay-primary-hover: #ffad33;
     --btc-pay-text-primary: #e0e0e0;

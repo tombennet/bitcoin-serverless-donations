@@ -74,16 +74,16 @@ The simplest approach is to add the CDN versions of the script and stylesheet, a
 
 **Common Derivation Paths:**
 
-- **BIP84 (P2WPKH)**: `m/84'/0'/0'` - Native SegWit, most common for modern wallets (bech32 addresses starting with `bc1q`). Extended public keys begin with `zpub`.
 - **BIP86 (P2TR)**: `m/86'/0'/0'` - Taproot (bech32m addresses starting with `bc1p`). Extended public keys begin with `xpub`.
-- **BIP44 (P2PKH)**: `m/44'/0'/0'` - Legacy addresses (base58 format). Extended public keys begin with `xpub`.
+- **BIP84 (P2WPKH)**: `m/84'/0'/0'` - Native SegWit, most common for modern wallets (bech32 addresses starting with `bc1q`). Extended public keys begin with `zpub`.
 - **BIP49 (P2WPKH-in-P2SH)**: `m/49'/0'/0'` - Nested SegWit (P2SH addresses starting with `3`). Extended public keys begin with `ypub`.
+- **BIP44 (P2PKH)**: `m/44'/0'/0'` - Legacy addresses (base58 format). Extended public keys begin with `xpub`.
 
 **Important Notes:**
 
 - Your XPUB should be from the **account level** (e.g., `m/84'/0'/0'`). The system automatically derives receiving addresses (`/0/index`) from your account-level XPUB.
-- For example, if your XPUB is derived from `m/84'/0'/0'`, the system will generate addresses at `m/84'/0'/0'/0/index`
 - Ensure values are enclosed in quotes, e.g. `BITCOIN_DERIVATION_PATH="m/84'/0'/0'"`
+- **Always verify that your config is producing expected addresses** by comparing the first few generated addresses with your wallet software. This is critical to ensure you can receive funds.
 
 **Advanced users**: See [TECHNICAL.md](TECHNICAL.md) for implementation details, cache management, and troubleshooting.
 
@@ -151,7 +151,7 @@ You can have multiple Bitcoin payment widgets on the same page by passing in a c
 
 Refer to [bitcoin-pay.js](/src/bitcoin-pay.js) to see all available API options.
 
-### Customization
+### Styling
 
 The widget can be fully customized using CSS custom properties (variables). You can change colors, spacing, typography, and more to match your site's design. **Dark mode is supported automatically** based on the user's system preferences.
 
@@ -164,8 +164,6 @@ The widget can be fully customized using CSS custom properties (variables). You 
 ```
 
 Refer to [bitcoin-pay.css](/src/bitcoin-pay.css) to see the full list of variables.
-
-**Important**: Whichever route you take, always verify that your XPUB generates expected addresses by comparing the first few addresses with your wallet software. This is critical to ensure you can receive funds.
 
 ## 🏗️ How It Works
 

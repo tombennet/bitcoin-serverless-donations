@@ -25,12 +25,15 @@
     "netlify-cli": "23.9.3",
     "postcss": "8.5.6",
     "terser": "5.44.0",
+    "typescript": "^5.9.3",
     "vitest": "4.0.1"
   },
   "main": "dist/bitcoin-pay.min.js",
   "module": "dist/bitcoin-pay.esm.js",
+  "types": "dist/bitcoin-pay.d.ts",
   "exports": {
     ".": {
+      "types": "./dist/bitcoin-pay.d.ts",
       "import": "./dist/bitcoin-pay.esm.js",
       "require": "./dist/bitcoin-pay.min.js",
       "default": "./dist/bitcoin-pay.min.js"
@@ -43,6 +46,7 @@
     "dist/",
     "src/",
     "functions/",
+    "bitcoin-pay.d.ts",
     "README.md",
     "TECHNICAL.md"
   ]

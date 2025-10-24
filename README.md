@@ -104,7 +104,7 @@ import { BitcoinPay } from "bitcoin-serverless-payments";
 import "bitcoin-serverless-payments/css";
 ```
 
-Loading it this way comes with several advantages, including a smaller bundle size and better caching.
+Loading it this way comes with several advantages, including a smaller bundle size and better caching. The library also comes with full TypeScript support.
 
 Once you've loaded the script, you can use the `BitcoinPay()` function.
 

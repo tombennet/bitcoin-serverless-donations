@@ -187,6 +187,13 @@ async function build() {
 
     writeFileSync(cssDest, cssResult.css, "utf8");
 
+    // ===== COPY TYPE DEFINITIONS =====
+    console.log("📘 Copying TypeScript definitions...");
+    const typesSource = join(__dirname, "bitcoin-pay.d.ts");
+    const typesDest = join(distDir, "bitcoin-pay.d.ts");
+    const typesContent = readFileSync(typesSource, "utf8");
+    writeFileSync(typesDest, typesContent, "utf8");
+
     // ===== OUTPUT SUMMARY =====
     console.log(`✅ Built successfully:`);
     console.log(
@@ -201,6 +208,7 @@ async function build() {
     );
     const minifiedCssSize = (cssResult.css.length / 1024).toFixed(2);
     console.log(`   🎨 CSS: ${cssDest} (${minifiedCssSize} KB)`);
+    console.log(`   📘 TypeScript: ${typesDest}`);
 
     // Show size comparison
     const originalJsSize = (

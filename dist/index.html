@@ -80,7 +80,7 @@
       BitcoinPay.render({
         selector: "#bitcoin-donate-basic",
         endpoint: "/.netlify/functions/get-address",
-        fallbackAddress: "bc1qtcp67ktfdcwfc7t3krwy8ttuqznrjldsuh5gsd",
+        bitcoinFallbackAddress: "bc1qtcp67ktfdcwfc7t3krwy8ttuqznrjldsuh5gsd",
       }).catch((error) => {
         console.error("Failed to render Bitcoin widget:", error);
       });
@@ -89,8 +89,8 @@
       BitcoinPay.render({
         selector: "#bitcoin-donate-lightning",
         endpoint: "/.netlify/functions/get-address",
-        lightning: "bennet@walletofsatoshi.com",
-        fallbackAddress: "bc1qtcp67ktfdcwfc7t3krwy8ttuqznrjldsuh5gsd",
+        lightningAddress: "bennet@walletofsatoshi.com",
+        bitcoinFallbackAddress: "bc1qtcp67ktfdcwfc7t3krwy8ttuqznrjldsuh5gsd",
       }).catch((error) => {
         console.error("Failed to render Bitcoin widget:", error);
       });

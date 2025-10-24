@@ -39,12 +39,12 @@ export interface BitcoinPayConfig {
   selector: string;
   /** The serverless function endpoint URL */
   endpoint: string;
-  /** Fallback on-chain address to use if the serverless function fails */
-  fallbackAddress: string;
-  /** Optional Lightning address (e.g., "name@provider.com") */
-  lightning?: string;
+  /** Fallback Bitcoin address to use if the serverless function fails */
+  bitcoinFallbackAddress: string;
   /** Optional custom text to display above the Bitcoin address field */
   bitcoinDonateText?: string;
+  /** Optional Lightning address (e.g., "name@provider.com") */
+  lightningAddress?: string;
   /** Optional custom text to display above the Lightning address field */
   lightningDonateText?: string;
   /** Optional configuration overrides */

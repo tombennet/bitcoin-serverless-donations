@@ -31,6 +31,8 @@ class BitcoinPay {
    * @param {string} config.selector - CSS selector for the target element(s)
    * @param {string} config.lightning - Optional Lightning address (e.g. "name@provider.com")
    * @param {string} config.fallbackAddress - Fallback on-chain address to use if the serverless function fails
+   * @param {string} config.bitcoinDonateText - Optional custom text to display above the Bitcoin address field
+   * @param {string} config.lightningDonateText - Optional custom text to display above the Lightning address field
    * @param {Object} config.options - Optional configuration overrides
    * @returns {Promise<Array>} Array of results for each element (with status and value/reason)
    */
@@ -40,6 +42,8 @@ class BitcoinPay {
       selector,
       lightning,
       fallbackAddress,
+      bitcoinDonateText,
+      lightningDonateText,
       options = {},
     } = config;
 
@@ -98,7 +102,14 @@ class BitcoinPay {
 
     // Render to each element independently
     const renderPromises = Array.from(targetElements).map((targetElement) =>
-      instance.renderToElement(targetElement, address, lightning, finalConfig)
+      instance.renderToElement(
+        targetElement,
+        address,
+        lightning,
+        bitcoinDonateText,
+        lightningDonateText,
+        finalConfig
+      )
     );
 
     // Use allSettled so one failure doesn't break others
@@ -110,15 +121,34 @@ class BitcoinPay {
    * Render widget to a single element
    * @private
    */
-  async renderToElement(targetElement, address, lightning, finalConfig) {
+  async renderToElement(
+    targetElement,
+    address,
+    lightning,
+    bitcoinDonateText,
+    lightningDonateText,
+    finalConfig
+  ) {
     // Create unique keys for this instance (for DOM elements)
     const instanceId = this.generateInstanceId();
 
     try {
       // Create the widget HTML (single or dual mode)
       const widgetHTML = lightning
-        ? this.createDualWidgetHTML(address, lightning, finalConfig, instanceId)
-        : this.createSingleWidgetHTML(address, finalConfig, instanceId);
+        ? this.createDualWidgetHTML(
+            address,
+            lightning,
+            bitcoinDonateText,
+            lightningDonateText,
+            finalConfig,
+            instanceId
+          )
+        : this.createSingleWidgetHTML(
+            address,
+            bitcoinDonateText,
+            finalConfig,
+            instanceId
+          );
       targetElement.innerHTML = widgetHTML;
 
       // Initialize QR code and copy functionality
@@ -248,9 +278,16 @@ class BitcoinPay {
   /**
    * Create the single Bitcoin widget HTML structure
    */
-  createSingleWidgetHTML(address, config, instanceId) {
+  createSingleWidgetHTML(address, bitcoinDonateText, config, instanceId) {
     const qrContainerId = `btc-qr-${instanceId}`;
     const buttonId = `btc-btn-${instanceId}`;
+
+    // Use custom text if provided, otherwise use smart device-detection behavior
+    const descriptionHTML = bitcoinDonateText
+      ? bitcoinDonateText
+      : `<span class="prefix-desktop">Scan with</span>
+              <span class="prefix-touch">Tap to open</span>
+              your Bitcoin wallet, or copy the on-chain address below.`;
 
     return `
       <div class="bitcoin-pay-widget">
@@ -260,9 +297,7 @@ class BitcoinPay {
           </a>
           <div class="content-area">
             <p class="description">
-              <span class="prefix-desktop">Scan with</span>
-              <span class="prefix-touch">Tap to open</span>
-              your Bitcoin wallet, or copy the on-chain address below.
+              ${descriptionHTML}
             </p>
             <div class="address-container">
               <div class="address-text">
@@ -283,11 +318,31 @@ class BitcoinPay {
   /**
    * Create the dual Bitcoin/Lightning widget HTML structure
    */
-  createDualWidgetHTML(address, lightning, config, instanceId) {
+  createDualWidgetHTML(
+    address,
+    lightning,
+    bitcoinDonateText,
+    lightningDonateText,
+    config,
+    instanceId
+  ) {
     const bitcoinQrId = `btc-qr-${instanceId}`;
     const lightningQrId = `lightning-qr-${instanceId}`;
     const bitcoinBtnId = `btc-btn-${instanceId}`;
     const lightningBtnId = `lightning-btn-${instanceId}`;
+
+    // Use custom text if provided, otherwise use smart device-detection behavior
+    const bitcoinDescriptionHTML = bitcoinDonateText
+      ? bitcoinDonateText
+      : `<span class="prefix-desktop">Scan with</span>
+              <span class="prefix-touch">Tap to open</span>
+              your Bitcoin wallet, or copy the on-chain address below.`;
+
+    const lightningDescriptionHTML = lightningDonateText
+      ? lightningDonateText
+      : `<span class="prefix-desktop">Scan with</span>
+              <span class="prefix-touch">Tap to open</span>
+              your Lightning wallet, or copy my Lightning address below.`;
 
     return `
       <div class="bitcoin-pay-widget has-tabs">
@@ -327,9 +382,7 @@ class BitcoinPay {
               </a>
               <div class="content-area">
                 <p class="description">
-                  <span class="prefix-desktop">Scan with</span>
-                  <span class="prefix-touch">Tap to open</span>
-                  your Bitcoin wallet, or copy the on-chain address below.
+                  ${bitcoinDescriptionHTML}
                 </p>
                 <div class="address-container">
                   <div class="address-text">
@@ -353,9 +406,7 @@ class BitcoinPay {
               </a>
               <div class="content-area">
                 <p class="description">
-                  <span class="prefix-desktop">Scan with</span>
-                  <span class="prefix-touch">Tap to open</span>
-                  your Lightning wallet, or copy my Lightning address below.
+                  ${lightningDescriptionHTML}
                 </p>
                 <div class="address-container">
                   <div class="address-text">

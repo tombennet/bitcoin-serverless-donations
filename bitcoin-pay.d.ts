@@ -43,6 +43,10 @@ export interface BitcoinPayConfig {
   fallbackAddress: string;
   /** Optional Lightning address (e.g., "name@provider.com") */
   lightning?: string;
+  /** Optional custom text to display above the Bitcoin address field */
+  bitcoinDonateText?: string;
+  /** Optional custom text to display above the Lightning address field */
+  lightningDonateText?: string;
   /** Optional configuration overrides */
   options?: BitcoinPayOptions;
 }

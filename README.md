@@ -110,7 +110,7 @@ Once you've loaded the script, you can use the `BitcoinPay()` function.
 
 ### Render the widget
 
-The `BitcoinPay()` function expects 3 parameters:
+The `BitcoinPay()` function accepts multiple parameters:
 
 - `selector`: A CSS selector for the element(s) into which it will render the payment widget (e.g., `#bitcoin-donate` or `.donation-widget`).
 - `endpoint`: The full URL of your backend function - by default it will live at `/.netlify/functions/get-address` on whichever domain you deployed to.
@@ -148,6 +148,8 @@ You also have the option of a two-panel layout, supporting both Bitcoin and Ligh
 ```
 
 You can have multiple Bitcoin payment widgets on the same page by passing in a class selector (e.g., `.donation-widget`). Alternatively you can call `BitcoinPay.render()` multiple times with a different element each time.
+
+Refer to [bitcoin-pay.js](/src/bitcoin-pay.js) to see all available API options.
 
 ### Customization
 

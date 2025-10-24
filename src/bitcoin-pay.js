@@ -29,9 +29,9 @@ class BitcoinPay {
    * @param {Object} config - Configuration object
    * @param {string} config.endpoint - The serverless function endpoint URL
    * @param {string} config.selector - CSS selector for the target element(s)
-   * @param {string} config.lightning - Optional Lightning address (e.g. "name@provider.com")
-   * @param {string} config.fallbackAddress - Fallback on-chain address to use if the serverless function fails
+   * @param {string} config.bitcoinFallbackAddress - Fallback Bitcoin address to use if the serverless function fails
    * @param {string} config.bitcoinDonateText - Optional custom text to display above the Bitcoin address field
+   * @param {string} config.lightningAddress - Optional Lightning address (e.g. "name@provider.com")
    * @param {string} config.lightningDonateText - Optional custom text to display above the Lightning address field
    * @param {Object} config.options - Optional configuration overrides
    * @returns {Promise<Array>} Array of results for each element (with status and value/reason)
@@ -40,9 +40,9 @@ class BitcoinPay {
     const {
       endpoint,
       selector,
-      lightning,
-      fallbackAddress,
+      bitcoinFallbackAddress,
       bitcoinDonateText,
+      lightningAddress,
       lightningDonateText,
       options = {},
     } = config;
@@ -51,8 +51,8 @@ class BitcoinPay {
       throw new Error("BitcoinPay: endpoint is required");
     }
 
-    if (!fallbackAddress) {
-      throw new Error("BitcoinPay: fallbackAddress is required");
+    if (!bitcoinFallbackAddress) {
+      throw new Error("BitcoinPay: bitcoinFallbackAddress is required");
     }
 
     if (!selector) {
@@ -86,7 +86,7 @@ class BitcoinPay {
         addressKey,
         timestampKey,
         finalConfig,
-        fallbackAddress
+        bitcoinFallbackAddress
       );
     } catch (error) {
       // If address fetch fails, all elements fail
@@ -105,7 +105,7 @@ class BitcoinPay {
       instance.renderToElement(
         targetElement,
         address,
-        lightning,
+        lightningAddress,
         bitcoinDonateText,
         lightningDonateText,
         finalConfig
@@ -124,7 +124,7 @@ class BitcoinPay {
   async renderToElement(
     targetElement,
     address,
-    lightning,
+    lightningAddress,
     bitcoinDonateText,
     lightningDonateText,
     finalConfig
@@ -134,10 +134,10 @@ class BitcoinPay {
 
     try {
       // Create the widget HTML (single or dual mode)
-      const widgetHTML = lightning
+      const widgetHTML = lightningAddress
         ? this.createDualWidgetHTML(
             address,
-            lightning,
+            lightningAddress,
             bitcoinDonateText,
             lightningDonateText,
             finalConfig,
@@ -152,10 +152,10 @@ class BitcoinPay {
       targetElement.innerHTML = widgetHTML;
 
       // Initialize QR code and copy functionality
-      if (lightning) {
+      if (lightningAddress) {
         await this.initializeDualWidget(
           address,
-          lightning,
+          lightningAddress,
           finalConfig,
           instanceId
         );
@@ -320,7 +320,7 @@ class BitcoinPay {
    */
   createDualWidgetHTML(
     address,
-    lightning,
+    lightningAddress,
     bitcoinDonateText,
     lightningDonateText,
     config,
@@ -401,7 +401,7 @@ class BitcoinPay {
           <!-- Lightning Tab Content -->
           <div id="lightning-content-${instanceId}" class="tab-content" data-tab="lightning">
             <div class="widget-layout">
-              <a href="lightning:${lightning}" class="qr-container" aria-label="Open in Lightning wallet">
+              <a href="lightning:${lightningAddress}" class="qr-container" aria-label="Open in Lightning wallet">
                 <div id="${lightningQrId}" class="qr-code"></div>
               </a>
               <div class="content-area">
@@ -410,7 +410,7 @@ class BitcoinPay {
                 </p>
                 <div class="address-container">
                   <div class="address-text">
-                    <span>${lightning}</span>
+                    <span>${lightningAddress}</span>
                   </div>
                   ${
                     config.showCopyButton
@@ -474,7 +474,7 @@ class BitcoinPay {
   /**
    * Initialize dual Bitcoin/Lightning widget
    */
-  async initializeDualWidget(address, lightning, config, instanceId) {
+  async initializeDualWidget(address, lightningAddress, config, instanceId) {
     const bitcoinQrId = `btc-qr-${instanceId}`;
     const lightningQrId = `lightning-qr-${instanceId}`;
     const bitcoinBtnId = `btc-btn-${instanceId}`;
@@ -496,7 +496,7 @@ class BitcoinPay {
     const lightningQrContainer = document.getElementById(lightningQrId);
     if (lightningQrContainer) {
       const svg = generateQrSvg({
-        text: `lightning:${lightning}`,
+        text: `lightning:${lightningAddress}`,
         size: config.width,
         logoHref: this.defaultConfig.qrCodeOptions.lightningImage,
         alt: "Lightning address QR",
@@ -532,7 +532,7 @@ class BitcoinPay {
       const lightningCopyButton = document.getElementById(lightningBtnId);
       if (lightningCopyButton) {
         lightningCopyButton.addEventListener("click", async () => {
-          const success = await this.copyToClipboard(lightning);
+          const success = await this.copyToClipboard(lightningAddress);
           const originalText = lightningCopyButton.textContent;
 
           if (success) {

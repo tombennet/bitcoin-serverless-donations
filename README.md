@@ -38,7 +38,7 @@ The simplest approach is to add the CDN versions of the script and stylesheet, a
   BitcoinPay.render({
     endpoint: "https://your-site.netlify.app/.netlify/functions/get-address",
     selector: "#bitcoin-donate",
-    fallbackAddress: "bc1q...",
+    bitcoinFallbackAddress: "bc1q...",
   }).catch((error) => {
     console.error("Failed to render Bitcoin widget:", error);
   });
@@ -114,7 +114,10 @@ The `BitcoinPay()` function accepts multiple parameters:
 
 - `selector`: A CSS selector for the element(s) into which it will render the payment widget (e.g., `#bitcoin-donate` or `.donation-widget`).
 - `endpoint`: The full URL of your backend function - by default it will live at `/.netlify/functions/get-address` on whichever domain you deployed to.
-- `fallbackAddress`: The Bitcoin address to use if your backend function is ever unavailable. I'd suggest picking the first unused address from the account associated with your XPUB.
+- `bitcoinFallbackAddress`: The Bitcoin address to use if your backend function is ever unavailable. I'd suggest picking the first unused address from the account associated with your XPUB.
+- `bitcoinDonateText`: Optional custom text to display above the Bitcoin address field.
+- `lightningAddress`: Optional [Lightning address](https://lightningaddress.com/) (e.g., `yourname@provider.com`) for dual Bitcoin/Lightning mode.
+- `lightningDonateText`: Optional custom text to display above the Lightning address field.
 
 For example:
 
@@ -123,24 +126,8 @@ For example:
   BitcoinPay.render({
     selector: "#bitcoin-donate",
     endpoint: "https://your-site.netlify.app/.netlify/functions/get-address",
-    fallbackAddress: "bc1q...",
-  }).catch((error) => {
-    console.error("Failed to render Bitcoin widget:", error);
-  });
-</script>
-```
-
-### Bitcoin + Lightning support
-
-You also have the option of a two-panel layout, supporting both Bitcoin and Lightning payments. You'll need a static [Lightning address](https://lightningaddress.com/) to use this option.
-
-```html
-<script>
-  BitcoinPay.render({
-    selector: "#bitcoin-donate",
-    endpoint: "https://your-site.netlify.app/.netlify/functions/get-address",
-    fallbackAddress: "bc1q...",
-    lightning: "yourname@provider.com",
+    bitcoinFallbackAddress: "bc1q...",
+    lightningAddress: "yourname@provider.com",
   }).catch((error) => {
     console.error("Failed to render Bitcoin widget:", error);
   });

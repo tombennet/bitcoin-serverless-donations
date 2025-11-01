@@ -266,3 +266,25 @@
     --btc-pay-surface: #ffffff;
   }
 }
+
+/* Manual dark mode via data-theme attribute */
+html[data-theme="dark"] :where(.bitcoin-pay-widget) {
+  --btc-pay-primary: #f7931a;
+  --btc-pay-primary-hover: #ffad33;
+  --btc-pay-text-primary: #e0e0e0;
+  --btc-pay-text-secondary: #a0a0a0;
+  --btc-pay-border: #444;
+  --btc-pay-background: #2a2a2a;
+  --btc-pay-surface: #ffffff;
+}
+
+/* Manual dark mode via .dark class (Tailwind-style) */
+html.dark :where(.bitcoin-pay-widget) {
+  --btc-pay-primary: #f7931a;
+  --btc-pay-primary-hover: #ffad33;
+  --btc-pay-text-primary: #e0e0e0;
+  --btc-pay-text-secondary: #a0a0a0;
+  --btc-pay-border: #444;
+  --btc-pay-background: #2a2a2a;
+  --btc-pay-surface: #ffffff;
+}

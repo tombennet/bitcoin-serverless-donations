@@ -88,6 +88,7 @@
   height: 20px;
   display: inline-block;
   flex-shrink: 0;
+  fill: var(--btc-pay-text-secondary);
 }
 
 .bitcoin-pay-widget .tab-btn.active {

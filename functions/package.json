@@ -1,5 +1,5 @@
 {
-  "name": "bitcoin-serverless-payments-functions",
+  "name": "bitcoin-serverless-donations-functions",
   "version": "1.0.0",
   "type": "module",
   "dependencies": {

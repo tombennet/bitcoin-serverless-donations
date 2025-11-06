@@ -1,10 +1,10 @@
-# Bitcoin Serverless Payments
+# Bitcoin Serverless Donations
 
-A simple, self-custodial solution for accepting private, on-chain Bitcoin donations with minimal overhead and a good level of privacy.
+A simple, self-custodial solution for accepting private, on-chain Bitcoin payments with minimal overhead and a good level of privacy.
 
 This repository contains both the serverless backend and an npm package which serves as the frontend. You can see a [live demo on my blog](https://bennet.org/blog/private-serverless-bitcoin-payments-for-indie-devs/).
 
-![Bitcoin Serverless Payments widget](/src/img/preview.png)
+![Bitcoin Serverless Donations widget](/src/img/preview.png)
 
 ## ✨ Features
 
@@ -19,7 +19,7 @@ This repository contains both the serverless backend and an npm package which se
 
 One click deployment to Netlify - just set your environment variables and you're ready to go.
 
-[![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/tombennet/bitcoin-serverless-payments#BITCOIN_XPUB=your_extended_public_key&BITCOIN_DERIVATION_PATH=your_account_path)
+[![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/tombennet/bitcoin-serverless-donations#BITCOIN_XPUB=your_extended_public_key&BITCOIN_DERIVATION_PATH=your_account_path)
 
 ### Frontend
 
@@ -28,9 +28,9 @@ The simplest approach is to add the CDN versions of the script and stylesheet, a
 ```html
 <link
   rel="stylesheet"
-  href="https://cdn.jsdelivr.net/npm/bitcoin-serverless-payments@latest/dist/bitcoin-pay.min.css"
+  href="https://cdn.jsdelivr.net/npm/bitcoin-serverless-donations@latest/dist/bitcoin-pay.min.css"
 />
-<script src="https://cdn.jsdelivr.net/npm/bitcoin-serverless-payments@latest/dist/bitcoin-pay.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bitcoin-serverless-donations@latest/dist/bitcoin-pay.min.js"></script>
 
 <div id="bitcoin-donate"></div>
 
@@ -51,8 +51,8 @@ The simplest approach is to add the CDN versions of the script and stylesheet, a
 
 1. **Clone repository**
    ```bash
-   git clone https://github.com/tombennet/bitcoin-serverless-payments.git
-   cd bitcoin-serverless-payments
+   git clone https://github.com/tombennet/bitcoin-serverless-donations.git
+   cd bitcoin-serverless-donations
    npm install
    ```
 2. **Set your environment variables in `.env`**:
@@ -94,14 +94,14 @@ The simplest approach is to add the CDN versions of the script and stylesheet, a
 The fastest way to get started is to load the script via CDN using a basic `<script>` tag (shown above in Quick Start). Alternatively, if you're using a bundler like Vite, you can install this library as an ES module using npm:
 
 ```bash
-npm install bitcoin-serverless-payments
+npm install bitcoin-serverless-donations
 ```
 
 Then import the script and styles into your project:
 
 ```javascript
-import { BitcoinPay } from "bitcoin-serverless-payments";
-import "bitcoin-serverless-payments/css";
+import { BitcoinPay } from "bitcoin-serverless-donations";
+import "bitcoin-serverless-donations/css";
 ```
 
 Loading it this way comes with several advantages, including a smaller bundle size and better caching. The library also comes with full TypeScript support.

@@ -1,13 +1,20 @@
 {
-  "name": "bitcoin-serverless-payments",
-  "version": "1.0.12",
-  "author": "https://github.com/tombennet/bitcoin-serverless-payments",
+  "name": "bitcoin-serverless-donations",
+  "version": "1.0.13",
+  "author": "https://github.com/tombennet/bitcoin-serverless-donations",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/tombennet/bitcoin-serverless-payments.git"
+    "url": "https://github.com/tombennet/bitcoin-serverless-donations.git"
   },
   "type": "module",
+  "keywords": [
+    "bitcoin",
+    "donations",
+    "payments",
+    "xpub",
+    "netlify"
+  ],
   "scripts": {
     "dev": "netlify dev",
     "build": "node build.js",

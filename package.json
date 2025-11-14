@@ -1,6 +1,6 @@
 {
   "name": "bitcoin-serverless-donations",
-  "version": "1.0.14",
+  "version": "1.0.15",
   "author": "https://github.com/tombennet/bitcoin-serverless-donations",
   "license": "MIT",
   "repository": {
@@ -27,7 +27,7 @@
     "@netlify/functions": "5.1.0",
     "@swan-bitcoin/xpub-lib": "0.3.0",
     "cssnano": "7.1.2",
-    "netlify-cli": "23.11.0",
+    "netlify-cli": "23.9.5",
     "postcss": "8.5.6",
     "terser": "5.44.1",
     "typescript": "^5.9.3",

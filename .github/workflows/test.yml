@@ -37,7 +37,7 @@ jobs:
         run: |
           echo "⚠️ Tests failed! This could indicate:"
           echo "1. A dependency update changed address derivation"
-          echo "2. Breaking changes in @swan-bitcoin/xpub-lib or @bitcoinerlab/secp256k1"
+          echo "2. Breaking changes in @scure/bip32, @noble/hashes, or @noble/curves"
           echo "3. Critical regression in address generation logic"
           echo ""
           echo "🔍 Review the test output above to identify which addresses changed."

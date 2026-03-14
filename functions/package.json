@@ -3,9 +3,11 @@
   "version": "1.0.0",
   "type": "module",
   "dependencies": {
-    "@bitcoinerlab/secp256k1": "1.2.0",
     "@netlify/blobs": "10.2.1",
     "@netlify/functions": "5.0.1",
-    "@swan-bitcoin/xpub-lib": "0.3.0"
+    "@noble/curves": "^2.0.1",
+    "@noble/hashes": "^2.0.1",
+    "@scure/base": "^2.0.0",
+    "@scure/bip32": "^2.0.1"
   }
 }

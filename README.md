@@ -156,7 +156,7 @@ Refer to [bitcoin-pay.css](/src/bitcoin-pay.css) to see the full list of variabl
 
 ### Backend (Serverless function)
 
-Your extended public key (or 'XPUB', exported from your Bitcoin wallet) is stored as an environment variable, along with its derivation path. The serverless function derives addresses using [Swan's XPUB tool](https://github.com/swan-bitcoin/xpub-tool), stores them, rotates them, checks for transactions, and removes used addresses from circulation.
+Your extended public key (or 'XPUB', exported from your Bitcoin wallet) is stored as an environment variable, along with its derivation path. The serverless function derives addresses using audited, zero-dependency libraries from the [noble](https://github.com/paulmillr/noble-curves) and [scure](https://github.com/paulmillr/scure-bip32) families, stores them, rotates them, checks for transactions, and removes used addresses from circulation.
 
 - Address pool rotates every 10 minutes automatically
 - The mempool.space API is used to check for used addresses, which are replaced with fresh ones from your XPUB

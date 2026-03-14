@@ -1,15 +1,10 @@
 import { getStore } from "@netlify/blobs";
-import {
-  addressFromExtPubKey,
-  addressesFromExtPubKey,
-  Purpose,
-  initEccLib,
-} from "@swan-bitcoin/xpub-lib";
-import { createHash } from "crypto";
-import ecc from "@bitcoinerlab/secp256k1";
-
-// Initialize ECC library for Taproot support
-initEccLib(ecc);
+import { HDKey } from "@scure/bip32";
+import { bech32, bech32m, createBase58check } from "@scure/base";
+import { sha256 } from "@noble/hashes/sha2.js";
+import { ripemd160 } from "@noble/hashes/legacy.js";
+import { secp256k1 } from "@noble/curves/secp256k1.js";
+import { utf8ToBytes, concatBytes, bytesToHex } from "@noble/hashes/utils.js";
 
 export interface AddressPoolEntry {
   index: number;
@@ -33,7 +28,121 @@ const STORE_NAME = "address-pool";
  */
 function generateEnvironmentHash(xpub: string, derivationPath: string): string {
   const configString = `${xpub}:${derivationPath}`;
-  return createHash("sha256").update(configString).digest("hex").slice(0, 16);
+  const hash = sha256(utf8ToBytes(configString));
+  return bytesToHex(hash).slice(0, 16); // Use first 16 chars for shorter keys
+}
+
+/** BIP340/BIP341 tagged hash: H_tag(m) = sha256(sha256(tag)||sha256(tag)||m) */
+function taggedHash(tag: string, m: Uint8Array): Uint8Array {
+  const t = utf8ToBytes(tag);
+  const th = sha256(t);
+  return sha256(concatBytes(th, th, m));
+}
+
+/** BIP86 output key = P + H_TapTweak(P)*G (no script tree) -> return x-only(Q) */
+function taprootTweakXOnly(internalXOnly: Uint8Array): Uint8Array {
+  const tweak = taggedHash("TapTweak", internalXOnly);
+  const tweakBig = BigInt("0x" + bytesToHex(tweak));
+
+  // Lift x-only to even-Y point per BIP340: use compressed key 0x02||X
+  const P = secp256k1.Point.fromHex("02" + bytesToHex(internalXOnly));
+
+  // Q = P + tweak*G   (handle rare tweak==0 gracefully)
+  const Q =
+    tweakBig === 0n ? P : P.add(secp256k1.Point.BASE.multiply(tweakBig));
+
+  // Return x-only bytes of Q (drop 0x02/0x03)
+  return Q.toBytes(true).slice(1);
+}
+
+/**
+ * Get version bytes for HDKey based on BIP purpose
+ */
+function getVersionBytes(purpose: number): {
+  public: number;
+  private: number;
+} {
+  switch (purpose) {
+    case 44:
+      return { public: 0x488b21e, private: 0x488ade4 }; // xpub / xprv
+    case 49:
+      return { public: 0x49d7cb2, private: 0x49d7878 }; // ypub / yprv
+    case 84:
+      return { public: 0x4b24746, private: 0x4b2430c }; // zpub / zprv
+    case 86:
+      return { public: 0x488b21e, private: 0x488ade4 }; // xpub / xprv
+    default:
+      throw new Error(
+        `Unsupported purpose: ${purpose}. Supported: 44 (P2PKH), 49 (P2WPKH-in-P2SH), 84 (P2WPKH), 86 (P2TR)`
+      );
+  }
+}
+
+/**
+ * Derive a Bitcoin address from an extended public key at the given index
+ */
+export function deriveAddress(
+  xpub: string,
+  purpose: number,
+  index: number
+): string {
+  // Try to create HDKey without version strings first (let it auto-detect)
+  let hdkey: HDKey;
+  try {
+    hdkey = HDKey.fromExtendedKey(xpub);
+  } catch {
+    // If auto-detection fails, try with explicit version strings
+    const versions = getVersionBytes(purpose);
+    hdkey = HDKey.fromExtendedKey(xpub, versions);
+  }
+
+  // Derive the child key for this address index
+  // XPUB is at account level, so we derive to change level (0 for receiving) then to address index
+  // Note: We can only derive non-hardened children from XPUB
+  const child = hdkey.derive(`m/0/${index}`);
+
+  if (!child.publicKey) {
+    throw new Error(`Failed to derive public key for index ${index}`);
+  }
+
+  const base58check = createBase58check(sha256);
+  const HASH160 = (buf: Uint8Array) => ripemd160(sha256(buf));
+
+  switch (purpose) {
+    case 44: {
+      // Legacy P2PKH: base58check(version + HASH160(pubkey))
+      const payload = new Uint8Array([0x00, ...HASH160(child.publicKey)]);
+      return base58check.encode(payload);
+    }
+    case 49: {
+      // P2WPKH-in-P2SH: base58check(version + HASH160(redeemScript))
+      const redeemScript = new Uint8Array([
+        0x00,
+        0x14,
+        ...HASH160(child.publicKey),
+      ]);
+      const payload = new Uint8Array([0x05, ...HASH160(redeemScript)]);
+      return base58check.encode(payload);
+    }
+    case 84: {
+      // Native SegWit (P2WPKH): bech32 encode witness v0 + HASH160(pubkey)
+      const words = bech32.toWords(HASH160(child.publicKey));
+      words.unshift(0x00); // witness version 0
+      return bech32.encode("bc", words);
+    }
+    case 86: {
+      // Taproot (P2TR)
+      const xOnlyInternal = child.publicKey.slice(1, 33);
+      const xOnlyTweaked = taprootTweakXOnly(xOnlyInternal);
+      const words = bech32m.toWords(xOnlyTweaked);
+      words.unshift(0x01); // v1
+      return bech32m.encode("bc", words);
+    }
+    default:
+      throw new Error(
+        `Unsupported purpose: ${purpose}. Supported: 44 (P2PKH), 49 (P2WPKH-in-P2SH), 84 (P2WPKH), 86 (P2TR)`
+      );
+  }
 }
 
 export class AddressPoolManager {
@@ -52,47 +161,16 @@ export class AddressPoolManager {
   }
 
   /**
-   * Detect purpose from derivation path and return xpub-lib Purpose enum
+   * Detect purpose from derivation path
    */
-  private detectPurpose(): Purpose {
+  private detectPurpose(): number {
     // Extract purpose from derivation path (e.g., m/84'/0'/0' -> 84)
     const match = this.derivationPath.match(/m\/(\d+)'/);
-    const purposeNumber = match ? parseInt(match[1], 10) : 84; // Default to BIP84
-
-    // Map purpose number to xpub-lib Purpose enum
-    switch (purposeNumber) {
-      case 44:
-        return Purpose.P2PKH;
-      case 49:
-        return Purpose.P2SH;
-      case 84:
-        return Purpose.P2WPKH;
-      case 86:
-        return Purpose.P2TR;
-      default:
-        throw new Error(
-          `Unsupported purpose: ${purposeNumber}. Supported: 44 (P2PKH), 49 (P2WPKH-in-P2SH), 84 (P2WPKH), 86 (P2TR)`
-        );
+    if (match) {
+      return parseInt(match[1], 10);
     }
-  }
-
-  /**
-   * Derive a Bitcoin address from XPUB at the given index
-   */
-  private deriveAddress(index: number): string {
-    try {
-      const result = addressFromExtPubKey({
-        extPubKey: this.xpub,
-        network: "mainnet",
-        purpose: this.detectPurpose(),
-        change: 0, // receiving addresses
-        keyIndex: index, // address index
-      });
-
-      return result.address;
-    } catch (error) {
-      throw new Error(`Address derivation failed for index ${index}: ${error}`);
-    }
+    // Default to BIP84 if no purpose found
+    return 84;
   }
 
   /**
@@ -114,7 +192,7 @@ export class AddressPoolManager {
       return data.chain_stats?.tx_count > 0 || data.mempool_stats?.tx_count > 0;
     } catch (error) {
       console.error(`Failed to check activity for address ${address}:`, error);
-      // On error, assume no activity
+      // On error, assume no activity to be safe
       return false;
     }
   }
@@ -148,22 +226,17 @@ export class AddressPoolManager {
    * Initialize a new address pool
    */
   private async initializePool(): Promise<AddressPoolState> {
-    // Generate all pool addresses in one call
-    const addresses = addressesFromExtPubKey({
-      extPubKey: this.xpub,
-      network: "mainnet",
-      purpose: this.detectPurpose(),
-      change: 0, // receiving addresses
-      addressCount: POOL_SIZE,
-      addressStartIndex: 0, // start from index 0
-    });
+    const purpose = this.detectPurpose();
+    const pool: AddressPoolEntry[] = [];
 
-    const pool: AddressPoolEntry[] = addresses.map((result, i) => ({
-      index: i,
-      address: result.address,
-      lastCheck: Date.now(),
-      hasActivity: false,
-    }));
+    for (let i = 0; i < POOL_SIZE; i++) {
+      pool.push({
+        index: i,
+        address: deriveAddress(this.xpub, purpose, i),
+        lastCheck: Date.now(),
+        hasActivity: false,
+      });
+    }
 
     const state: AddressPoolState = {
       currentIndex: 0,
@@ -193,15 +266,16 @@ export class AddressPoolManager {
     const maxIndex = Math.max(...state.pool.map((entry) => entry.index));
     let nextIndex = maxIndex + 1;
 
+    const purpose = this.detectPurpose();
+
     // Start with unused addresses, then add fresh ones to the end
     const newPool = [...unusedAddresses];
 
     // Generate fresh addresses for each used address
     for (const usedEntry of usedAddresses) {
-      const newAddress = this.deriveAddress(nextIndex);
       newPool.push({
         index: nextIndex,
-        address: newAddress,
+        address: deriveAddress(this.xpub, purpose, nextIndex),
         lastCheck: Date.now(),
         hasActivity: false,
       });

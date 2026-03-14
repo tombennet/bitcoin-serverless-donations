@@ -8,7 +8,7 @@ Advanced implementation details for the Bitcoin address pool system.
 
 ### Address Derivation
 
-Addresses are derived from a Bitcoin XPUB using [Swan's XPUB tool](https://github.com/swan-bitcoin/xpub-tool). This is deterministic - the same XPUB always generates the same addresses in the same order.
+Addresses are derived from a Bitcoin XPUB using the [noble](https://github.com/paulmillr/noble-curves) and [scure](https://github.com/paulmillr/scure-bip32) cryptographic libraries. These are audited, zero-dependency packages used by bitcoinjs-lib, ethers.js, and viem. Derivation is deterministic - the same XPUB always generates the same addresses in the same order.
 
 The system automatically detects and supports multiple BIP standards:
 
@@ -72,8 +72,10 @@ The address pool will automatically regenerate on the next function invocation.
 
 The system uses the following npm packages:
 
-- **`@swan-bitcoin/xpub-lib`**: HD wallet key derivation and address generation
-- **`@bitcoinerlab/secp256k1`**: Elliptic curve cryptography for Taproot support. Note: the popular `tiny-secp256k1` library doesn't work in a serverless environment due to WASM compatibility issues.
+- **`@scure/bip32`**: HD wallet key derivation (BIP32)
+- **`@scure/base`**: Address encoding (base58check, bech32, bech32m)
+- **`@noble/hashes`**: Cryptographic hash functions (SHA-256, RIPEMD-160)
+- **`@noble/curves`**: Elliptic curve operations (secp256k1, used for Taproot tweaking)
 - **`@netlify/blobs`**: State persistence for the address pool
 - **`@netlify/functions`**: Serverless function framework
 

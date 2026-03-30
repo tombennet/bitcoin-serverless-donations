@@ -2,7 +2,7 @@
 
 Accept private, on-chain Bitcoin payments with no database, no middlemen, and no server maintenance. Payments go directly to your own wallet.
 
-This repository contains both the serverless backend and an npm package for the frontend. See a [live demo on my blog](https://bennet.org/resources/private-serverless-bitcoin-donations/).
+This repository contains both the serverless backend and an npm package for the frontend.
 
 ![Bitcoin Serverless Donations widget](/src/img/preview.png)
 
@@ -68,12 +68,12 @@ For a complete walkthrough, see [the tutorial on my blog](https://bennet.org/res
 
 ### Derivation Paths
 
-| Standard | Path | Address format | XPUB prefix |
-|---|---|---|---|
-| BIP86 (P2TR) | `m/86'/0'/0'` | Taproot, `bc1p...` | `xpub` |
-| BIP84 (P2WPKH) | `m/84'/0'/0'` | Native SegWit, `bc1q...` | `zpub` |
-| BIP49 (P2WPKH-in-P2SH) | `m/49'/0'/0'` | Nested SegWit, `3...` | `ypub` |
-| BIP44 (P2PKH) | `m/44'/0'/0'` | Legacy, `1...` | `xpub` |
+| Standard               | Path          | Address format           | XPUB prefix |
+| ---------------------- | ------------- | ------------------------ | ----------- |
+| BIP86 (P2TR)           | `m/86'/0'/0'` | Taproot, `bc1p...`       | `xpub`      |
+| BIP84 (P2WPKH)         | `m/84'/0'/0'` | Native SegWit, `bc1q...` | `zpub`      |
+| BIP49 (P2WPKH-in-P2SH) | `m/49'/0'/0'` | Nested SegWit, `3...`    | `ypub`      |
+| BIP44 (P2PKH)          | `m/44'/0'/0'` | Legacy, `1...`           | `xpub`      |
 
 Your XPUB should be from the **account level** (e.g., `m/84'/0'/0'`). The function derives receiving addresses (`/0/index`) from there. Make sure values are enclosed in quotes, e.g. `BITCOIN_DERIVATION_PATH="m/84'/0'/0'"`.
 
@@ -100,14 +100,14 @@ import "bitcoin-serverless-donations/css";
 
 `BitcoinPay.render()` accepts the following:
 
-| Option | Description |
-|---|---|
-| `selector` | CSS selector for the target element(s), e.g. `#bitcoin-donate` |
-| `endpoint` | Full URL of your backend function |
-| `bitcoinFallbackAddress` | Address to use if the backend is unavailable |
-| `bitcoinDonateText` | Custom text above the Bitcoin address field |
-| `lightningAddress` | [Lightning address](https://lightningaddress.com/) for dual Bitcoin/Lightning mode |
-| `lightningDonateText` | Custom text above the Lightning address field |
+| Option                   | Description                                                                        |
+| ------------------------ | ---------------------------------------------------------------------------------- |
+| `selector`               | CSS selector for the target element(s), e.g. `#bitcoin-donate`                     |
+| `endpoint`               | Full URL of your backend function                                                  |
+| `bitcoinFallbackAddress` | Address to use if the backend is unavailable                                       |
+| `bitcoinDonateText`      | Custom text above the Bitcoin address field                                        |
+| `lightningAddress`       | [Lightning address](https://lightningaddress.com/) for dual Bitcoin/Lightning mode |
+| `lightningDonateText`    | Custom text above the Lightning address field                                      |
 
 You can render multiple widgets by using a class selector (e.g. `.donation-widget`) or by calling `BitcoinPay.render()` multiple times. See [bitcoin-pay.js](/src/bitcoin-pay.js) for the full API.
 
